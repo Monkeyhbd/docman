@@ -1,0 +1,15 @@
+{
+  "name": "docman",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "node index.js"
+  },
+  "author": "Monkeyhbd",
+  "license": "GPL-2.0-only",
+  "dependencies": {
+    "jsdom": "^20.0.0",
+    "showdown": "^2.1.0"
+  }
+}

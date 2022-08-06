@@ -1,0 +1,229 @@
+/* <Top Design> -------------------------------------------------------------------------------- */
+
+:root {
+	--header-height: 60px;
+	--main-sticky-offset: var(--header-height);
+	--main-visible-height: calc(100vh - var(--header-height));
+}
+
+:root {
+	--default-background-color: #ffffff
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	font-family: sans-serif;
+	background-color: var(--default-background-color);
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+header {
+	position: sticky;
+	top: 0;
+	box-sizing: border-box;
+	background-color: white;
+	width: 100%;
+	height: var(--header-height);
+	border-bottom: 1px solid #e8e8e8;
+	z-index: 100;
+}
+
+footer {
+	background-color: rgb(221, 255, 255);
+	width: 100%;
+	height: 200px;
+}
+
+/* --------------------------------------------------------------------------------------------- */
+
+/* <Main> -------------------------------------------------------------------------------------- */
+
+.main-inner {
+	box-sizing: border-box;
+	display: grid;
+	grid-template-areas: "left center";
+	grid-template-columns: minmax(240px, 1fr) minmax(0, 3.5fr);
+	gap: 16px;
+	padding: 0 20px;
+	max-width: 1600px;
+	margin: 0 auto;
+}
+
+@media screen and (max-width: 960px) {
+	.main-inner {
+		grid-template-areas: "center";
+		grid-template-columns: 100%;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	.main-inner {
+		padding: 0 4px;
+	}
+}
+
+/* --------------------------------------------------------------------------------------------- */
+
+/* <Main Left> --------------------------------------------------------------------------------- */
+
+.main-left {
+	grid-area: left;
+	position: sticky;
+	top: var(--main-sticky-offset);
+	box-sizing: border-box;
+	width: 100%;
+	height: var(--main-visible-height);
+	overflow: auto;
+	padding: 0 0;
+	background-color: var(--default-background-color);
+}
+
+.main-left-inner {
+	padding: 40px 0;
+}
+
+.contents {
+	padding: 0 20px 0 0;
+}
+
+.contents ul {
+	list-style: none;
+	margin: 0;
+	padding: 0 0 0 24px;
+}
+
+.contents > ul {
+	padding: 0;
+}
+
+.contents ul * {
+	color: #444444;
+	text-decoration: none;
+}
+
+.contents ul a {
+	display: block;
+	padding: 6px 12px;
+	background-color: rgba(0, 0, 0, 0);
+	border-radius: 5px;
+}
+
+.contents ul a:hover {
+	background-color: rgba(0, 0, 0, 0.05);
+}
+
+.contents .item-title {
+	font-size: 16px;
+}
+
+.contents .item-describe {
+	font-size: 13px;
+	color: #999999;
+}
+
+.main-left-head {
+	display: none;
+	height: 32px;
+	position: relative;
+}
+
+.main-left-close-button {
+	position: absolute;
+	right: 0;
+	width: 32px;
+	height: 32px;
+	line-height: 32px;
+	text-align: center;
+	font-size: 20px;
+	font-weight: 600;
+	color: red;
+	cursor: pointer;
+	user-select: none;
+}
+
+.main-left-close-button:hover {
+	color: rgb(210, 0, 0);
+}
+
+@media screen and (max-width: 960px) {
+	.main-left {
+		position: fixed;
+		left: 0;
+		top: var(--main-sticky-offset);
+		width: 100%;
+		max-width: 420px;
+		height: var(--main-visible-height);
+		border-right: 1px solid #e8e8e8;
+		transition: left 0.5s;
+		z-index: 10;
+	}
+
+	.main-left.open {
+		left: 0;
+	}
+
+	.main-left.close {
+		left: -100%;
+	}
+
+	.main-left-head {
+		display: block;
+	}
+
+	.contents {
+		padding: 0 20px 0 20px;
+	}
+}
+
+/* --------------------------------------------------------------------------------------------- */
+
+/* <Main Center> ------------------------------------------------------------------------------- */
+
+.main-center {
+	grid-area: center;
+	box-sizing: border-box;
+	width: 100%;
+	min-height: 1200px;
+}
+
+.content-wrapper {
+	padding: 10px 20px 60px 20px;
+}
+
+/* --------------------------------------------------------------------------------------------- */
+
+.widgets .main-left-open-widget {
+	display: none;
+	--main-left-open-widget-height: 60px;
+	position: fixed;
+	box-sizing: border-box;
+	border: 1px solid #e8e8e8;
+	border-left: none;
+	left: 0;
+	top: calc(var(--main-sticky-offset) + 0.5 * var(--main-visible-height) - 0.5 * var(--main-left-open-widget-height));
+	background-color: white;
+	width: 24px;
+	height: var(--main-left-open-widget-height);
+	cursor: pointer;
+	user-select: none;
+	z-index: 5;
+}
+
+.widgets .main-left-open-widget:hover {
+	background-color: rgb(240, 240, 240);
+}
+
+.widgets .main-left-open-widget div {
+	width: 100%;
+	height: 100%;
+	line-height: var(--main-left-open-widget-height);
+	text-align: center;
+	color: gray;
+}
+
+@media screen and (max-width: 960px) {
+	.widgets .main-left-open-widget {
+		display: block;
+	}
+}
