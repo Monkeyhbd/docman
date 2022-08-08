@@ -41,8 +41,10 @@ var htmlTemplate = fs.readFileSync("./template/index.html", 'utf8')
 // Initialize virtual dom.
 var dom = new jsdom.JSDOM(htmlTemplate)
 
+dom.window.document.getElementById('header-title-h1').innerHTML = docIndex.title
+
 // Move assets from docs and template to dist. (STEP 1)
-var tagNames = ['link', 'script', 'img']
+var tagNames = ['link', 'script', "img"]
 var attrNames = ['src', 'href']
 for (var idxT = 0; idxT < tagNames.length; idxT += 1) {
 	var tagName = tagNames[idxT]
@@ -51,7 +53,7 @@ for (var idxT = 0; idxT < tagNames.length; idxT += 1) {
 		var tagElement = tagElements[idxTE]
 		for (var idxA = 0; idxA < attrNames.length; idxA += 1) {
 			var attrName = attrNames[idxA]
-			console.log(tagElement[attrName])
+			// console.log(tagElement[attrName])
 			if (tagElement[attrName] != undefined) {
 				var srcPath = path.join('./template', tagElement[attrName])
 				var desPath = path.join(environment.outputDir, tagElement[attrName])
@@ -82,12 +84,17 @@ function generateContents(ulElement, contentsList) {
 		// If 'path' defined, write <a>'s href attribute.
 		// And join this md file to build task list.
 		if (contentsList[idx].path != undefined) {
-			a.href = path.basename(contentsList[idx].path, '.md') + '.html'
 			var task = {
 				mdPath: path.join(environment.inputDir, contentsList[idx].path),
 				outputDir: environment.outputDir,
+				htmlPath: undefined,
 				headTitle: contentsList[idx].title
 			}
+			task.htmlPath = path.join(task.outputDir, path.basename(task.mdPath, '.md') + '.html')
+			if (contentsList[idx].rename != undefined) {
+				task.htmlPath = path.join(task.outputDir, contentsList[idx].rename + '.html')
+			}
+			a.href = path.relative(environment.outputDir, task.htmlPath)
 			buildTasks.push(task)
 		}
 		// The name 'title' must be defined.
@@ -118,7 +125,7 @@ var ul = dom.window.document.createElement('ul')
 generateContents(ul, docIndex.list)
 dom.window.document.getElementById('contents').innerHTML = ul.outerHTML
 
-console.log(buildTasks)
+// console.log(buildTasks)
 
 // Build html file to outputDir.
 function buildHTML(mdPath, outputDir, task) {
@@ -142,7 +149,7 @@ function buildHTML(mdPath, outputDir, task) {
 	// Move assets from docs and template to dist. (STEP 2)
 
 	// Output to html dist.
-	var htmlPath = path.join(outputDir, path.basename(mdPath, '.md') + '.html')
+	var htmlPath = task.htmlPath
 	fs.writeFileSync(htmlPath, dom.serialize(), 'utf8')
 	console.log(mdPath, '  -->  ', htmlPath)
 }
