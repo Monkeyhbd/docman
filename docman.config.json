@@ -1,5 +1,7 @@
 {
 	"inputDir": "./docs",
 
-	"outputDir": "./dist"
+	"outputDir": "./dist",
+
+	"themeDir": "./themes/docman-theme-classic"
 }

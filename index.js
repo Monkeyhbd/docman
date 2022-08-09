@@ -18,9 +18,14 @@ var environment = {
 	docIndex: undefined,
 
 	// Directory that published on web server.
-	outputDir: docConfig.outputDir
+	outputDir: docConfig.outputDir,
+
+	themeDir: docConfig.themeDir,
+
+	themeHtml: undefined
 }
 environment.docIndex = path.join(environment.inputDir, 'index.json')
+environment.themeHtml = path.join(environment.themeDir, 'index.html')
 
 console.log(environment)
 
@@ -37,7 +42,7 @@ var docIndexData = fs.readFileSync(environment.docIndex)
 var docIndex = JSON.parse(docIndexData)
 
 // Read template html.
-var htmlTemplate = fs.readFileSync("./template/index.html", 'utf8')
+var htmlTemplate = fs.readFileSync(environment.themeHtml, 'utf8')
 // Initialize virtual dom.
 var dom = new jsdom.JSDOM(htmlTemplate)
 
@@ -55,7 +60,7 @@ for (var idxT = 0; idxT < tagNames.length; idxT += 1) {
 			var attrName = attrNames[idxA]
 			// console.log(tagElement[attrName])
 			if (tagElement[attrName] != undefined) {
-				var srcPath = path.join('./template', tagElement[attrName])
+				var srcPath = path.join(environment.themeDir, tagElement[attrName])
 				var desPath = path.join(environment.outputDir, tagElement[attrName])
 				var desDir = path.dirname(desPath)
 				try {
