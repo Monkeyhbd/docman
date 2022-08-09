@@ -46,7 +46,21 @@ var htmlTemplate = fs.readFileSync(environment.themeHtml, 'utf8')
 // Initialize virtual dom.
 var dom = new jsdom.JSDOM(htmlTemplate)
 
-dom.window.document.getElementById('header-title-h1').innerHTML = docIndex.title
+dom.window.document.getElementById('docman-hook-title').innerHTML = docIndex.title
+
+function isRelativePath(pathString) {
+	if (path.isAbsolute(pathString)) {
+		return false
+	}
+	else {
+		if (pathString.length >= 7 && pathString.slice(0, 7) == "http://" || pathString.length >= 8 && pathString.slice(0, 8) == "https://") {
+			return false
+		}
+		else {
+			return true
+		}
+	}
+}
 
 // Move assets from docs and template to dist. (STEP 1)
 var tagNames = ['link', 'script', "img"]
@@ -60,17 +74,19 @@ for (var idxT = 0; idxT < tagNames.length; idxT += 1) {
 			var attrName = attrNames[idxA]
 			// console.log(tagElement[attrName])
 			if (tagElement[attrName] != undefined) {
-				var srcPath = path.join(environment.themeDir, tagElement[attrName])
-				var desPath = path.join(environment.outputDir, tagElement[attrName])
-				var desDir = path.dirname(desPath)
-				try {
-					fs.accessSync(desDir)
+				if (isRelativePath(tagElement[attrName])) {
+					var srcPath = path.join(environment.themeDir, tagElement[attrName])
+					var desPath = path.join(environment.outputDir, tagElement[attrName])
+					var desDir = path.dirname(desPath)
+					try {
+						fs.accessSync(desDir)
+					}
+					catch (err) {
+						fs.mkdirSync(desDir, {recursive: true})
+					}
+					console.log(`Copy ${srcPath} to ${desPath}.`)
+					fs.copyFileSync(srcPath, desPath)
 				}
-				catch (err) {
-					fs.mkdirSync(desDir, {recursive: true})
-				}
-				console.log(`Copy ${srcPath} to ${desPath}.`)
-				fs.copyFileSync(srcPath, desPath)
 			}
 		}
 	}
@@ -134,7 +150,7 @@ function generateContents(ulElement, contentsList) {
 // Generate contents <ul>.
 var ul = dom.window.document.createElement('ul')
 generateContents(ul, docIndex.list)
-dom.window.document.getElementById('contents').innerHTML = ul.outerHTML
+dom.window.document.getElementById('docman-hook-contents').innerHTML = ul.outerHTML
 
 // console.log(buildTasks)
 
@@ -146,7 +162,7 @@ function buildHTML(mdPath, outputDir, task) {
 	var converter = new showdown.Converter({tables: true, strikethrough: true})
 	var mdHtml = converter.makeHtml(mdRaw)
 	// Insert html to virtual dom.
-	var contentElement = dom.window.document.getElementById('markdown-container')
+	var contentElement = dom.window.document.getElementById('docman-hook-markdown')
 	contentElement.innerHTML = mdHtml
 
 	// Additional jobs.
@@ -160,6 +176,34 @@ function buildHTML(mdPath, outputDir, task) {
 	// Add 'current' to <a> classList.
 	dom.window.document.getElementById(task.aId).classList.add('current')
 	// Move assets from docs and template to dist. (STEP 2)
+	var tagNames = ["img"]
+	var attrNames = ['src', 'href']
+	for (var idxT = 0; idxT < tagNames.length; idxT += 1) {
+		var tagName = tagNames[idxT]
+		var tagElements = contentElement.getElementsByTagName(tagName)
+		for (var idxTE = 0; idxTE < tagElements.length; idxTE += 1) {
+			var tagElement = tagElements[idxTE]
+			for (var idxA = 0; idxA < attrNames.length; idxA += 1) {
+				var attrName = attrNames[idxA]
+				// console.log(tagElement[attrName])
+				if (tagElement[attrName] != undefined) {
+					if (isRelativePath(tagElement[attrName])) {
+						var srcPath = path.join(environment.inputDir, tagElement[attrName])
+						var desPath = path.join(environment.outputDir, tagElement[attrName])
+						var desDir = path.dirname(desPath)
+						try {
+							fs.accessSync(desDir)
+						}
+						catch (err) {
+							fs.mkdirSync(desDir, {recursive: true})
+						}
+						console.log(`Copy ${srcPath} to ${desPath}.`)
+						fs.copyFileSync(srcPath, desPath)
+					}
+				}
+			}
+		}
+	}
 
 	// Output to html dist.
 	var htmlPath = task.htmlPath
