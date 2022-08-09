@@ -8,29 +8,40 @@
 }
 
 .content h1 {
-    color: #111111;
-    font-weight: 400;
-    font-size: 2em;
+    color: #222222;
+    font-weight: 700;
+    font-size: 2.2em;
     margin-top: 1em;
     margin-bottom: 1em;
-    text-align: center;
-    border-bottom: rgb(172, 172, 172) solid 2px;
+    border-bottom: rgb(200, 200, 200) solid 2px;
+}
+
+.content h2 {
+    font-size: 1.5em;
+}
+
+.content h3 {
+    font-size: 1.17em;
+}
+
+.content h4 {
+    font-size: 1em;
+}
+
+.content h5 {
+    font-size: 0.83em;
+}
+
+.content h6 {
+    font-size: 0.75em;
 }
 
 .content h2,
 .content h3,
 .content h4 {
-    color: #111111;
-    font-weight: 400;
+    color: #222222;
+    font-weight: 600;
     margin-top: 0.5em;
-}
-
-.content h1,
-.content h2,
-.content h3,
-.content h4,
-.content h5 {
-    font-weight: bold;
 }
 
 .content h2 {
@@ -44,14 +55,14 @@
 .content h5,
 .content p,
 .content dl {
-    margin-top: 12px;
-    margin-bottom: 12px;
+    margin-top: 14px;
+    margin-bottom: 14px;
     padding: 0;
 }
 
 .content p,
 .content dl {
-    margin-top: 12px;
+    margin-top: 14px;
     padding: 0;
 }
 
@@ -102,18 +113,18 @@ h6 * {
     padding: 0;
     padding-left: 24px;
     margin: 0 0 0 5px;
-    list-style: circle !important;
+    list-style: disc !important;
 }
 
 .content li {
-    line-height: 24px;
+    line-height: 26px;
 }
 
 .content p,
 .content ul,
 .content ol {
     font-size: 16px;
-    line-height: 24px;
+    line-height: 26px;
 }
 
 .content ol ol,
@@ -151,7 +162,7 @@ h6 * {
 .content pre {
     line-height: 1.5em;
     overflow: auto;
-    padding: 10px 14px;
+    padding: 12px 18px;
     border-left: 5px solid #cccccc;
 }
 
@@ -165,7 +176,6 @@ h6 * {
     font-size: .85em;
     white-space: pre;
     background: 0 0;
-
 }
 
 .content code {
@@ -192,10 +202,6 @@ h6 * {
     font-size: 14px;
     line-height: 20px;
     color: #bfbfbf;
-}
-
-.content blockquote cite:before {
-    content: '\2014 \00A0';
 }
 
 .content blockquote p,
@@ -275,165 +281,7 @@ h6 * {
 }
 
 .content p img {
-    margin: 16px auto;
-}
-
-.content button,
-.content input[type="button"],
-.content input[type="reset"],
-.content input[type="submit"] {
-    cursor: pointer;
-    -webkit-appearance: button;
-}
-
-.content input[type=checkbox],
-.content input[type=radio] {
-    cursor: pointer;
-}
-
-/* override default chrome & firefox settings */
-.content input:not([type="image"]),
-.content textarea {
-    -webkit-box-sizing: content-box;
-    -moz-box-sizing: content-box;
-    box-sizing: content-box;
-}
-
-.content input[type="search"] {
-    -webkit-appearance: textfield;
-    -webkit-box-sizing: content-box;
-    -moz-box-sizing: content-box;
-    box-sizing: content-box;
-}
-
-.content input[type="search"]::-webkit-search-decoration {
-    -webkit-appearance: none;
-}
-
-.content label,
-.content input,
-.content select,
-.content textarea {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 13px;
-    font-weight: normal;
-    line-height: normal;
-    margin-bottom: 18px;
-}
-
-.content input[type=checkbox],
-.content input[type=radio] {
-    cursor: pointer;
-    margin-bottom: 0;
-}
-
-.content input[type=text],
-.content input[type=password],
-.content textarea,
-.content select {
-    display: inline-block;
-    width: 210px;
-    padding: 4px;
-    font-size: 13px;
-    font-weight: normal;
-    line-height: 18px;
-    height: 18px;
-    color: #808080;
-    border: 1px solid #ccc;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
-}
-
-.content select,
-.content input[type=file] {
-    height: 27px;
-    line-height: 27px;
-}
-
-.content textarea {
-    height: auto;
-}
-
-/* grey out placeholders */
-.content :-moz-placeholder {
-    color: #bfbfbf;
-}
-
-.content ::-webkit-input-placeholder {
-    color: #bfbfbf;
-}
-
-.content input[type=text],
-.content input[type=password],
-.content select,
-.content textarea {
-    -webkit-transition: border linear 0.2s, box-shadow linear 0.2s;
-    -moz-transition: border linear 0.2s, box-shadow linear 0.2s;
-    transition: border linear 0.2s, box-shadow linear 0.2s;
-    -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-    -moz-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.content input[type=text]:focus,
-.content input[type=password]:focus,
-.content textarea:focus {
-    outline: none;
-    border-color: rgba(82, 168, 236, 0.8);
-    -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
-    -moz-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
-}
-
-/* buttons */
-.content button {
-    display: inline-block;
-    padding: 4px 14px;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 13px;
-    line-height: 18px;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
-    -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-    -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-    background-color: #0064cd;
-    background-repeat: repeat-x;
-    background-image: -khtml-gradient(linear, left top, left bottom, from(#049cdb), to(#0064cd));
-    background-image: -moz-linear-gradient(top, #049cdb, #0064cd);
-    background-image: -ms-linear-gradient(top, #049cdb, #0064cd);
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #049cdb), color-stop(100%, #0064cd));
-    background-image: -webkit-linear-gradient(top, #049cdb, #0064cd);
-    background-image: -o-linear-gradient(top, #049cdb, #0064cd);
-    background-image: linear-gradient(top, #049cdb, #0064cd);
-    color: #fff;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-    border: 1px solid #004b9a;
-    border-bottom-color: #003f81;
-    -webkit-transition: 0.1s linear all;
-    -moz-transition: 0.1s linear all;
-    transition: 0.1s linear all;
-    border-color: #0064cd #0064cd #003f81;
-    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-}
-
-.content button:hover {
-    color: #fff;
-    background-position: 0 -15px;
-    text-decoration: none;
-}
-
-.content button:active {
-    -webkit-box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
-    -moz-box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
-    box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
-}
-
-.content button::-moz-focus-inner {
-    padding: 0;
-    border: 0;
+    margin: 24px auto;
 }
 
 .content table {
@@ -512,14 +360,15 @@ h6 * {
 
 @media screen and (max-width: 600px) {
     .content {
-        font-size: 14px;
+        font-size: 15px;
     }
 
     .content p,
     .content ul,
-    .content ol {
-        font-size: 14px;
-        line-height: 22px;
+    .content ol,
+    .content li {
+        font-size: 15px;
+        line-height: 24px;
     }
 
     .content code {
@@ -527,7 +376,27 @@ h6 * {
     }
 
     .content h1 {
-        font-size: 1.6em;
+        font-size: 1.9em;
+    }
+
+    .content h2 {
+        font-size: 1.4em;
+    }
+    
+    .content h3 {
+        font-size: 1.17em;
+    }
+    
+    .content h4 {
+        font-size: 1em;
+    }
+    
+    .content h5 {
+        font-size: 0.83em;
+    }
+    
+    .content h6 {
+        font-size: 0.75em;
     }
 
     .content h2,
@@ -537,15 +406,6 @@ h6 * {
     .content p,
     .content dl {
         margin-bottom: 8px;
-        padding: 0;
-    }
-
-    .content h3,
-    .content h4,
-    .content h5,
-    .content p,
-    .content dl {
-        margin-top: 4px;
         padding: 0;
     }
 
@@ -562,6 +422,6 @@ h6 * {
     }
 
     .content pre {
-        padding: 4px 10px;
+        padding: 8px 14px;
     }
 }

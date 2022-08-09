@@ -88,14 +88,20 @@ function generateContents(ulElement, contentsList) {
 				mdPath: path.join(environment.inputDir, contentsList[idx].path),
 				outputDir: environment.outputDir,
 				htmlPath: undefined,
-				headTitle: contentsList[idx].title
+				headTitle: contentsList[idx].title,
+				aId: undefined
 			}
 			task.htmlPath = path.join(task.outputDir, path.basename(task.mdPath, '.md') + '.html')
+			task.aId = `a-${buildTasks.length}`
 			if (contentsList[idx].rename != undefined) {
 				task.htmlPath = path.join(task.outputDir, contentsList[idx].rename + '.html')
 			}
 			a.href = path.relative(environment.outputDir, task.htmlPath)
+			a.id = `a-${buildTasks.length}`
 			buildTasks.push(task)
+		}
+		else {
+			a.classList.add('nohover')
 		}
 		// The name 'title' must be defined.
 		var div1 = dom.window.document.createElement('div')
@@ -146,12 +152,17 @@ function buildHTML(mdPath, outputDir, task) {
 	for (var idx = 0; idx < aElements.length; idx += 1) {
 		aElements[idx].target = '_blank'
 	}
+	// Add 'current' to <a> classList.
+	dom.window.document.getElementById(task.aId).classList.add('current')
 	// Move assets from docs and template to dist. (STEP 2)
 
 	// Output to html dist.
 	var htmlPath = task.htmlPath
 	fs.writeFileSync(htmlPath, dom.serialize(), 'utf8')
 	console.log(mdPath, '  -->  ', htmlPath)
+
+	// Recover origin dom.
+	dom.window.document.getElementById(task.aId).classList.remove('current')
 }
 
 // Operate task in buildTasks.

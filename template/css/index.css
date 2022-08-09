@@ -31,7 +31,7 @@ header {
 }
 
 footer {
-	background-color: rgb(221, 255, 255);
+	background-color: rgb(240, 255, 255);
 	width: 100%;
 }
 
@@ -43,7 +43,7 @@ footer {
 
 @media screen and (max-width: 600px) {
 	.common-inner {
-		padding: 0 20px;
+		padding: 0 28px;
 	}
 }
 
@@ -166,8 +166,16 @@ footer {
 	border-radius: 5px;
 }
 
+.contents ul a.current {
+	background: linear-gradient(to right, rgb(220, 255, 255), rgb(240, 255, 255));
+}
+
 .contents ul a:hover {
 	background-color: rgba(0, 0, 0, 0.05);
+}
+
+.contents ul a.nohover:hover {
+	background-color: unset;
 }
 
 .contents .item-title {
@@ -240,6 +248,7 @@ footer {
 .main-center {
 	grid-area: center;
 	box-sizing: border-box;
+	min-height: var(--main-visible-height);
 	width: 100%;
 }
 
@@ -249,7 +258,7 @@ footer {
 
 @media screen and (max-width: 600px) {
 	.content-wrapper {
-		padding: 20px 8px 60px 8px;
+		padding: 20px 0 60px 0;
 	}
 }
 
@@ -304,6 +313,8 @@ footer {
 
 .footer-content {
 	padding: 40px 0;
+	font-size: 15px;
+	color: #555555;
 }
 
 .footer-content a {
