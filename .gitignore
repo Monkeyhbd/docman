@@ -5,7 +5,11 @@ package-lock.json
 # DocMan's default input / output directory
 docs/
 dist/
-themes/
+themes/*
+
+# Editor
+.vscode/
+.idea/
 
 # Keep
 !themes/docman-theme-classic
