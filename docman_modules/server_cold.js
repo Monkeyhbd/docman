@@ -2,6 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const jsdom = require('jsdom')
 const showdown = require('showdown')
+const crypto = require('crypto')
 
 
 // Return true if pathString is a relative path.
@@ -100,7 +101,7 @@ function buildHTML(dom, environment, task) {
 	// Move assets from docs and template to dist. (STEP 2)
 	var tagNames = ["img"]
 	var attrNames = ['src', 'href']
-	moveAssets(contentElement, tagNames, attrNames, environment.inputDir, environment.outputDir)
+	moveAssets(contentElement, tagNames, attrNames, path.dirname(task.mdPath), environment.outputDir)
 
 	// Output to html dist.
 	var htmlPath = task.htmlPath
@@ -115,6 +116,7 @@ function buildHTML(dom, environment, task) {
 // tagNames such as ['link', 'script', 'img'].
 // attrNames such as ['src', 'href'].
 // inputDir is the path that the relative path of the asset relative from.
+//     (That is, the directory of markdown file or template html.)
 // outputDir is usually docman/dist.
 function moveAssets(domElement, tagNames, attrNames, inputDir, outputDir) {
 	for (var idxT = 0; idxT < tagNames.length; idxT += 1) {
@@ -128,6 +130,15 @@ function moveAssets(domElement, tagNames, attrNames, inputDir, outputDir) {
 				if (tagElement[attrName] != undefined) {
 					if (isRelativePath(tagElement[attrName])) {
 						var srcPath = path.join(inputDir, tagElement[attrName])
+						if (tagElement[attrName].length >= 2 && tagElement[attrName].slice(0, 2) == '..') {
+							var buffer = fs.readFileSync(srcPath)
+							var fsHash = crypto.createHash('sha256')
+							fsHash.update(buffer)
+							var md5 = fsHash.digest('hex')
+							var extname = path.extname(tagElement[attrName])
+							var fileRename = path.basename(tagElement[attrName], extname) + '.' + md5.slice(0, 8) + extname
+							tagElement[attrName] = path.join('./docman-assets', fileRename)
+						}
 						var desPath = path.join(outputDir, tagElement[attrName])
 						var desDir = path.dirname(desPath)
 						try {

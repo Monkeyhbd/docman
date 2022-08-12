@@ -12,27 +12,40 @@ var docConfigData = fs.readFileSync('./docman.config.json', 'utf8')
 // DocMan's configuration object.
 var docConfig = JSON.parse(docConfigData)
 
-// Project's environment.
-var environment = {
-	// Directory that contains documents.
-	inputDir: docConfig.inputDir,
+function buildEnvironment(docConfig) {
+	// Project's environment.
+	var environment = {
+		// Directory that contains documents.
+		inputDir: docConfig.inputDir,
 
-	// Path to index.json.
-	docIndex: undefined,
+		// Path to index.json.
+		docIndex: undefined,
 
-	// Directory that published on web server.
-	outputDir: docConfig.outputDir,
+		// Directory that published on web server.
+		outputDir: docConfig.outputDir,
 
-	// Directory of the chosen theme.
-	themeDir: docConfig.themeDir,
+		// Directory of the chosen theme.
+		themeDir: docConfig.themeDir,
 
-	// Theme's index.html.
-	themeHtml: undefined
+		// Theme's index.html.
+		themeHtml: undefined
+	}
+	environment.docIndex = path.join(environment.inputDir, 'index.json')
+	environment.themeHtml = path.join(environment.themeDir, 'index.html')
+
+	console.log('Environment:', environment)
+
+	return environment
 }
-environment.docIndex = path.join(environment.inputDir, 'index.json')
-environment.themeHtml = path.join(environment.themeDir, 'index.html')
 
-console.log('Environment:', environment)
-
+var environment = buildEnvironment(docConfig)
 
 ServerCold.launch(environment)
+
+if (docConfig.alsoDo != undefined) {
+	for (var idx = 0; idx < docConfig.alsoDo.length; idx += 1) {
+		var subDocConfig = docConfig.alsoDo[idx]
+		var subEnvironment =buildEnvironment(subDocConfig)
+		ServerCold.launch(subEnvironment)
+	}
+}
