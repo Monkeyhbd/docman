@@ -77,14 +77,14 @@ function generateContents(dom, environment, ulElement, contentsList, buildTasks)
 }
 
 // Build html file to outputDir.
-function buildHTML(dom, environment, task) {
+function buildHTML(dom, environment, task, hooks) {
 	// Read markdown file.
 	var mdRaw = fs.readFileSync(task.mdPath, "utf8")
 	// Convert markdown to html.
 	var converter = new showdown.Converter({tables: true, strikethrough: true})
 	var mdHtml = converter.makeHtml(mdRaw)
 	// Insert html to virtual dom.
-	var contentElement = dom.window.document.getElementById('docman-hook-markdown')
+	var contentElement = hooks.markdown
 	contentElement.innerHTML = mdHtml
 
 	// Additional jobs.
@@ -176,8 +176,17 @@ function launch(environment) {
 	// Initialize virtual dom.
 	var dom = new jsdom.JSDOM(htmlTemplate)
 
+	var hooks = {
+		title: dom.window.document.getElementById('docman-hook-title'),
+
+		contents: dom.window.document.getElementById('docman-hook-contents'),
+
+		markdown: dom.window.document.getElementById('docman-hook-markdown')
+	}
+	// console.log(hooks)
+
 	// Set document title.
-	dom.window.document.getElementById('docman-hook-title').innerHTML = docIndex.title
+	hooks.title.innerHTML = docIndex.title
 	
 	// Move assets from docs and template to dist. (STEP 1)
 	var tagNames = ['link', 'script', "img"]
@@ -188,11 +197,11 @@ function launch(environment) {
 	var ul = dom.window.document.createElement('ul')
 	var buildTasks = []
 	generateContents(dom, environment, ul, docIndex.list, buildTasks)
-	dom.window.document.getElementById('docman-hook-contents').innerHTML = ul.outerHTML
+	hooks.contents.innerHTML = ul.outerHTML
 
 	// Operate task in buildTasks.
 	for (var idx = 0; idx < buildTasks.length; idx += 1) {
-		buildHTML(dom, environment, buildTasks[idx])
+		buildHTML(dom, environment, buildTasks[idx], hooks)
 	}
 }
 

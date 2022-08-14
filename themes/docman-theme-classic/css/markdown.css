@@ -5,6 +5,7 @@
     color: #333333;
     line-height: 1;
     text-rendering: optimizeLegibility;
+    overflow-wrap: break-word;
 }
 
 .content h1 {
