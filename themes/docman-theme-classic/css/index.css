@@ -276,18 +276,20 @@ footer {
 }
 
 .prev-bar {
+	display: flex;
 	width: 50%;
 	height: 100%;
 }
 
 .next-bar {
+	display: flex;
+	justify-content: flex-end;
 	width: 50%;
 	height: 100%;
-	text-align: right;
 }
 
 .prev-next-bar a {
-	display: inline-block;
+	display: flex;
 	text-decoration: none;
 	color: rgb(0, 87, 194);
 	font-weight: bold;
@@ -303,11 +305,15 @@ footer {
 	width: var(--prev-next-bar-height);
 	height: var(--prev-next-bar-height);
 	line-height: var(--prev-next-bar-height);
-	vertical-align: middle;
 }
 
 .prev-bar svg {
 	transform: rotate(180deg);
+	margin-right: 6px;
+}
+
+.next-bar svg {
+	margin-left: 6px;
 }
 
 .prev-next-bar a svg path {
@@ -318,11 +324,10 @@ footer {
 	fill: rgb(0, 58, 130);
 }
 
-.prev-next-bar a span {
-	display: inline-block;
+.prev-next-text {
+	display: block;
 	height: var(--prev-next-bar-height);
 	line-height: var(--prev-next-bar-height);
-	vertical-align: middle;
 }
 
 @media screen and (max-width: 600px) {

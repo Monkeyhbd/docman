@@ -79,6 +79,7 @@ function generateContents(dom, environment, ulElement, contentsList, buildTasks)
 // Build html file to outputDir.
 function buildHTML(dom, environment, tasks, taskIdx, hooks) {
 	var task = tasks[taskIdx]
+	console.log('Build:', task.mdPath, '  -->  ', task.htmlPath)
 	// Read markdown file.
 	var mdRaw = fs.readFileSync(task.mdPath, "utf8")
 	// Convert markdown to html.
@@ -141,7 +142,6 @@ function buildHTML(dom, environment, tasks, taskIdx, hooks) {
 	// Output to html dist.
 	var htmlPath = task.htmlPath
 	fs.writeFileSync(htmlPath, dom.serialize(), 'utf8')
-	console.log(task.mdPath, '  -->  ', htmlPath)
 
 	// Recover origin dom.
 	dom.window.document.getElementById(task.aId).classList.remove('current')
@@ -182,7 +182,7 @@ function moveAssets(domElement, tagNames, attrNames, inputDir, outputDir) {
 						catch (err) {
 							fs.mkdirSync(desDir, {recursive: true})
 						}
-						console.log(`Copy ${srcPath} to ${desPath}.`)
+						console.log(`Copy: ${srcPath}   -->   ${desPath}.`)
 						fs.copyFileSync(srcPath, desPath)
 					}
 				}
