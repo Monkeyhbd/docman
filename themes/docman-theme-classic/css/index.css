@@ -1,7 +1,7 @@
 /* <Top Design> -------------------------------------------------------------------------------- */
 
 :root {
-	--header-height: 60px;
+	--header-height: 56px;
 	--main-sticky-offset: var(--header-height);
 	--main-visible-height: calc(100vh - var(--header-height));
 }
@@ -83,7 +83,7 @@ footer {
 	margin: 0;
 	padding: 0;
 	line-height: var(--header-content-height);
-	font-size: 24px;
+	font-size: 22px;
 	font-weight: 500;
 }
 
