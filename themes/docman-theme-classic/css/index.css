@@ -264,6 +264,79 @@ footer {
 
 /* --------------------------------------------------------------------------------------------- */
 
+/* <Prev Next Bar> ----------------------------------------------------------------------------- */
+
+.prev-next-bar {
+	--prev-next-bar-height: 20px;
+	display: flex;
+	margin-top: 40px;
+	padding: 12px 0;
+	border-top: 1px solid #dddddd;
+	height: var(--prev-next-bar-height);
+}
+
+.prev-bar {
+	width: 50%;
+	height: 100%;
+}
+
+.next-bar {
+	width: 50%;
+	height: 100%;
+	text-align: right;
+}
+
+.prev-next-bar a {
+	display: inline-block;
+	text-decoration: none;
+	color: rgb(0, 87, 194);
+	font-weight: bold;
+	line-height: var(--prev-next-bar-height);
+	height: var(--prev-next-bar-height)
+}
+
+.prev-next-bar a:hover {
+	color: rgb(0, 58, 130);
+}
+
+.prev-next-bar svg {
+	width: var(--prev-next-bar-height);
+	height: var(--prev-next-bar-height);
+	line-height: var(--prev-next-bar-height);
+	vertical-align: middle;
+}
+
+.prev-bar svg {
+	transform: rotate(180deg);
+}
+
+.prev-next-bar a svg path {
+    fill: rgb(0, 87, 194);
+}
+
+.prev-next-bar a:hover svg path {
+	fill: rgb(0, 58, 130);
+}
+
+.prev-next-bar a span {
+	display: inline-block;
+	height: var(--prev-next-bar-height);
+	line-height: var(--prev-next-bar-height);
+	vertical-align: middle;
+}
+
+@media screen and (max-width: 600px) {
+	.prev-next-bar {
+		--prev-next-bar-height: 18px;
+	}
+
+	.prev-next-bar a {
+		font-size: 14px;
+	}
+}
+
+/* --------------------------------------------------------------------------------------------- */
+
 /* <Widgets> ----------------------------------------------------------------------------------- */
 
 .widgets .main-left-open-widget {

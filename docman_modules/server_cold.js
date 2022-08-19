@@ -77,7 +77,8 @@ function generateContents(dom, environment, ulElement, contentsList, buildTasks)
 }
 
 // Build html file to outputDir.
-function buildHTML(dom, environment, task, hooks) {
+function buildHTML(dom, environment, tasks, taskIdx, hooks) {
+	var task = tasks[taskIdx]
 	// Read markdown file.
 	var mdRaw = fs.readFileSync(task.mdPath, "utf8")
 	// Convert markdown to html.
@@ -102,6 +103,40 @@ function buildHTML(dom, environment, task, hooks) {
 	var tagNames = ["img"]
 	var attrNames = ['src', 'href']
 	moveAssets(contentElement, tagNames, attrNames, path.dirname(task.mdPath), environment.outputDir)
+
+	// Set prev and next.
+	if (taskIdx > 0) {
+		if (hooks.prevText != undefined) {
+			hooks.prevText.innerHTML = tasks[taskIdx-1].headTitle
+		}
+		if (hooks.prev != undefined) {
+			hooks.prev.href = path.relative(tasks[taskIdx-1].outputDir, tasks[taskIdx-1].htmlPath)
+		}
+	}
+	else {  // First
+		if (hooks.prevText != undefined) {
+			hooks.prevText.innerHTML = ''
+		}
+		if (hooks.prev != undefined) {
+			hooks.prev.href = ''
+		}
+	}
+	if (taskIdx < tasks.length - 1) {
+		if (hooks.nextText != undefined) {
+			hooks.nextText.innerHTML = tasks[taskIdx+1].headTitle
+		}
+		if (hooks.next != undefined) {
+			hooks.next.href = path.relative(tasks[taskIdx+1].outputDir, tasks[taskIdx+1].htmlPath)
+		}
+	}
+	else {  // Last
+		if (hooks.nextText != undefined) {
+			hooks.nextText.innerHTML = ''
+		}
+		if (hooks.next != undefined) {
+			hooks.next.href = ''
+		}
+	}
 
 	// Output to html dist.
 	var htmlPath = task.htmlPath
@@ -181,12 +216,31 @@ function launch(environment) {
 
 		contents: dom.window.document.getElementById('docman-hook-contents'),
 
-		markdown: dom.window.document.getElementById('docman-hook-markdown')
+		markdown: dom.window.document.getElementById('docman-hook-markdown'),
+
+		author: dom.window.document.getElementById('docman-hook-author'),
+
+		// 上一篇链接
+		prev: dom.window.document.getElementById('docman-hook-prev'),
+
+		// 下一篇链接
+		next: dom.window.document.getElementById('docman-hook-next'),
+
+		// 上一篇标题文本
+		prevText: dom.window.document.getElementById('docman-hook-prev-text'),
+
+		// 下一篇标题文本
+		nextText: dom.window.document.getElementById('docman-hook-next-text')
 	}
 	// console.log(hooks)
 
 	// Set document title.
 	hooks.title.innerHTML = docIndex.title
+
+	// Set document author.
+	if (hooks.author != null && docIndex.author != undefined) {
+		hooks.author.innerHTML = docIndex.author
+	}
 	
 	// Move assets from docs and template to dist. (STEP 1)
 	var tagNames = ['link', 'script', "img"]
@@ -201,7 +255,7 @@ function launch(environment) {
 
 	// Operate task in buildTasks.
 	for (var idx = 0; idx < buildTasks.length; idx += 1) {
-		buildHTML(dom, environment, buildTasks[idx], hooks)
+		buildHTML(dom, environment, buildTasks, idx, hooks)
 	}
 }
 
