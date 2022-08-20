@@ -20,6 +20,21 @@ function isRelativePath(pathString) {
 	}
 }
 
+
+function pathType(pathString) {
+	if (path.isAbsolute(pathString)) {
+		return 'absolute'
+	}
+	else {
+		if (pathString.length >= 7 && pathString.slice(0, 7) == "http://" || pathString.length >= 8 && pathString.slice(0, 8) == "https://") {
+			return 'web'
+		}
+		else {
+			return 'relative'
+		}
+	}
+}
+
 // Append contents/sub-contents's <li> element to ulElement.
 // And generate html build task to buildTasks.
 function generateContents(dom, environment, ulElement, contentsList, buildTasks) {
@@ -103,7 +118,10 @@ function buildHTML(dom, environment, tasks, taskIdx, hooks) {
 	// Move assets from docs and template to dist. (STEP 2)
 	var tagNames = ["img"]
 	var attrNames = ['src', 'href']
-	moveAssets(contentElement, tagNames, attrNames, path.dirname(task.mdPath), environment.outputDir)
+	// moveAssets(contentElement, tagNames, attrNames, path.dirname(task.mdPath), environment.outputDir)
+	copyAssets(contentElement, tagNames, attrNames,
+	           environment.inputDir, path.relative(environment.inputDir, path.dirname(task.mdPath)),
+	           environment.outputDir, path.relative(environment.outputDir, path.dirname(task.htmlPath)))
 
 	// Set prev and next.
 	if (taskIdx > 0) {
@@ -189,6 +207,88 @@ function moveAssets(domElement, tagNames, attrNames, inputDir, outputDir) {
 			}
 		}
 	}
+}
+
+
+function copyAssets(domElement, tagNames, attrNames, inputDir, inputDirMdDir, outputDir, outputDirHtmlDir) {
+	for (var idxT = 0; idxT < tagNames.length; idxT += 1) {
+		var tagName = tagNames[idxT]
+		var tagElements = domElement.getElementsByTagName(tagName)
+		for (var idxTE = 0; idxTE < tagElements.length; idxTE += 1) {
+			var tagElement = tagElements[idxTE]
+			for (var idxA = 0; idxA < attrNames.length; idxA += 1) {
+				var attrName = attrNames[idxA]
+				// console.log(tagElement[attrName])
+				if (tagElement[attrName] != undefined) {
+					var t = pathType(tagElement[attrName])
+					if (t == 'relative') {
+						var distAsset = copyRelativeAsset(inputDir, inputDirMdDir, tagElement[attrName], outputDir)
+						distAsset = path.relative(outputDir, distAsset)
+						tagElement[attrName] = path.relative(outputDirHtmlDir, distAsset)
+					}
+					else if (t == 'absolute') {
+						var distAsset = copyAbsoluteAsset(tagElement[attrName], outputDir)
+						distAsset = path.relative(outputDir, distAsset)
+						tagElement[attrName] = path.relative(outputDirHtmlDir, distAsset)
+					}
+					else {}
+				}
+			}
+		}
+	}
+}
+
+
+// assetRelativeFrom is the path that the relative path of the asset relative from,
+//     it must be a relative path relative to inputDir.
+function copyRelativeAsset(inputDir, assetRelativeFrom, assetRelativePath, outputDir) {
+	var fromInputDir = path.join(assetRelativeFrom, assetRelativePath)
+	var assetPath = path.join(inputDir, fromInputDir)
+	if (fromInputDir.length >= 2 && fromInputDir.slice(0, 2) == '..') {  // Assset is out of inputDir.
+		var fileRename = assetHashName(assetPath)
+		var desPath = path.join(outputDir, './docman-assets', fileRename)
+		return copyAsset(assetPath, desPath)
+	}
+	else {  // Asset is in inputDir.
+		var desPath = path.join(outputDir, fromInputDir)
+		return copyAsset(assetPath, desPath)
+	}
+}
+
+
+function copyAbsoluteAsset(assetPath, outputDir) {
+	var fileRename = assetHashName(assetPath)
+	var desPath = path.join(outputDir, './docman-assets', fileRename)
+	return copyAsset(assetPath, desPath)
+}
+
+
+// Rename asset by hash. Format: asset.123abc.ext
+function assetHashName(assetPath) {
+	var buffer = fs.readFileSync(assetPath)
+	var fsHash = crypto.createHash('sha256')
+	fsHash.update(buffer)
+	var md5 = fsHash.digest('hex')
+	var extname = path.extname(assetPath)
+	var fileRename = path.basename(assetPath, extname) + '.' + md5.slice(0, 8) + extname
+	return fileRename
+}
+
+
+// srcPath is the path of asset, can be relative path or absolute path.
+// desPath is the path that asset copy to.
+function copyAsset(srcPath, desPath) {
+	// Make sure desDir exist.
+	var desDir = path.dirname(desPath)
+	try {
+		fs.accessSync(desDir)
+	}
+	catch (err) {
+		fs.mkdirSync(desDir, {recursive: true})
+	}
+	console.log(`Copy: ${srcPath}   -->   ${desPath}.`)
+	fs.copyFileSync(srcPath, desPath)
+	return desPath
 }
 
 

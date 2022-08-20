@@ -11,5 +11,8 @@ themes/*
 .vscode/
 .idea/
 
+# Custom
+test/
+
 # Keep
 !themes/docman-theme-classic
