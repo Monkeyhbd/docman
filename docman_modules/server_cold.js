@@ -180,7 +180,7 @@ function moveAssets(domElement, tagNames, attrNames, inputDir, outputDir) {
 			for (var idxA = 0; idxA < attrNames.length; idxA += 1) {
 				var attrName = attrNames[idxA]
 				// console.log(tagElement[attrName])
-				if (tagElement[attrName] != undefined) {
+				if (tagElement[attrName] != undefined && tagElement[attrName] != '') {
 					if (isRelativePath(tagElement[attrName])) {
 						var srcPath = path.join(inputDir, tagElement[attrName])
 						if (tagElement[attrName].length >= 2 && tagElement[attrName].slice(0, 2) == '..') {
@@ -219,7 +219,7 @@ function copyAssets(domElement, tagNames, attrNames, inputDir, inputDirMdDir, ou
 			for (var idxA = 0; idxA < attrNames.length; idxA += 1) {
 				var attrName = attrNames[idxA]
 				// console.log(tagElement[attrName])
-				if (tagElement[attrName] != undefined) {
+				if (tagElement[attrName] != undefined && tagElement[attrName] != '') {
 					var t = pathType(tagElement[attrName])
 					if (t == 'relative') {
 						var distAsset = copyRelativeAsset(inputDir, inputDirMdDir, tagElement[attrName], outputDir)
