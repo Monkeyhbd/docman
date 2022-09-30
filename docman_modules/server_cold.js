@@ -20,7 +20,7 @@ function isRelativePath(pathString) {
 	}
 }
 
-
+// Determine the type of path. Type can be 'absolute', 'relative' or 'web'.
 function pathType(pathString) {
 	if (path.isAbsolute(pathString)) {
 		return 'absolute'
@@ -37,7 +37,7 @@ function pathType(pathString) {
 
 // Append contents/sub-contents's <li> element to ulElement.
 // And generate html build task to buildTasks.
-function generateContents(dom, environment, ulElement, contentsList, buildTasks) {
+function generateContents(dom, environment, ulElement, docIndex, contentsList, buildTasks) {
 	// Will build md to html later.
 	// buildTask = [{mdPath: 'path-to-md', outputDir: 'dir-of-html' ... } ... ]
 
@@ -52,6 +52,7 @@ function generateContents(dom, environment, ulElement, contentsList, buildTasks)
 				outputDir: environment.outputDir,
 				htmlPath: undefined,
 				headTitle: contentsList[idx].title,
+				headTitleWithPostfix: contentsList[idx].title + (docIndex.titlePostfix || ''),
 				aId: undefined
 			}
 			task.htmlPath = path.join(task.outputDir, path.basename(task.mdPath, path.extname(task.mdPath)) + '.html')
@@ -82,7 +83,7 @@ function generateContents(dom, environment, ulElement, contentsList, buildTasks)
 		// If 'list' defined, generate sub-contents.
 		if (contentsList[idx].list != undefined) {
 			var ul = dom.window.document.createElement('ul')
-			generateContents(dom, environment, ul, contentsList[idx].list, buildTasks)
+			generateContents(dom, environment, ul, docIndex, contentsList[idx].list, buildTasks)
 			li.appendChild(ul)
 		}
 		ulElement.appendChild(li)
@@ -106,7 +107,7 @@ function buildHTML(dom, environment, tasks, taskIdx, hooks) {
 
 	// Additional jobs.
 	// Set html head title.
-	dom.window.document.title = task.headTitle
+	dom.window.document.title = task.headTitleWithPostfix
 	// Set click <a> open a new tab.
 	var aElements = contentElement.getElementsByTagName('a')
 	for (var idx = 0; idx < aElements.length; idx += 1) {
@@ -345,12 +346,13 @@ function launch(environment) {
 	// Move assets from docs and template to dist. (STEP 1)
 	var tagNames = ['link', 'script', "img"]
 	var attrNames = ['src', 'href']
-	moveAssets(dom.window.document, tagNames, attrNames, environment.themeDir, environment.outputDir)
+	copyAssets(dom.window.document, tagNames, attrNames, environment.themeDir, './', environment.outputDir, './')
+	// moveAssets(dom.window.document, tagNames, attrNames, environment.themeDir, environment.outputDir)
 
 	// Generate contents <ul>.
 	var ul = dom.window.document.createElement('ul')
 	var buildTasks = []
-	generateContents(dom, environment, ul, docIndex.list, buildTasks)
+	generateContents(dom, environment, ul, docIndex, docIndex.list, buildTasks)
 	hooks.contents.innerHTML = ul.outerHTML
 
 	// Operate task in buildTasks.
