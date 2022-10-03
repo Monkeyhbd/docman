@@ -2,6 +2,8 @@
 
 DocMan 是一个自由开源的文档站点生成器，它可以让我们优雅、简洁的生成和部署开发文档，API 接口文档，教程，笔记等多种类型的站点。DocMan 依据文档项目的目录索引文件 `index.json` 将 Markdown 文档文件生成为一系列有组织的 HTML 站点文件。
 
+![01](./themes/docman-theme-classic/img/docman-introduction.png)
+
 ## DocMan
 
 DocMan 官方：
@@ -12,7 +14,7 @@ DocMan 官方：
 
 使用 DocMan 创建的文档站点：
 
-- Monkeyhbd 的 Python 教程：[Python 教程](https://www.monkeyhbd.com/python-tutorial)
+- DocMan 文档：[DocMan 文档](https://docman.monkeyhbd.com)
 - ProGit（转载）(i18n)：[中文](https://www.monkeyhbd.com/progit) | [English](https://www.monkeyhbd.com/progit/en) | [	Русский](https://www.monkeyhbd.com/progit/ru) | [日本語](https://www.monkeyhbd.com/progit/jp) | [한국어](https://www.monkeyhbd.com/progit/kr)
 
 ## 开始使用
