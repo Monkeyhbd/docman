@@ -5,21 +5,6 @@ const showdown = require('showdown')
 const crypto = require('crypto')
 
 
-// Return true if pathString is a relative path.
-function isRelativePath(pathString) {
-	if (path.isAbsolute(pathString)) {
-		return false
-	}
-	else {
-		if (pathString.length >= 7 && pathString.slice(0, 7) == "http://" || pathString.length >= 8 && pathString.slice(0, 8) == "https://") {
-			return false
-		}
-		else {
-			return true
-		}
-	}
-}
-
 // Determine the type of path. Type can be 'absolute', 'relative' or 'web'.
 function pathType(pathString) {
 	if (path.isAbsolute(pathString)) {
@@ -34,6 +19,7 @@ function pathType(pathString) {
 		}
 	}
 }
+
 
 // Append contents/sub-contents's <li> element to ulElement.
 // And generate html build task to buildTasks.
@@ -91,6 +77,7 @@ function generateContents(dom, environment, ulElement, docIndex, contentsList, b
 
 	return buildTasks
 }
+
 
 // Build html file to outputDir.
 function buildHTML(dom, environment, tasks, taskIdx, hooks) {
@@ -166,51 +153,14 @@ function buildHTML(dom, environment, tasks, taskIdx, hooks) {
 	dom.window.document.getElementById(task.aId).classList.remove('current')
 }
 
-// Move the assets that included by domElement's children element from inputDir to outputDir.
+
+// Copy the assets that included by domElement's chilren element to dist directory.
 // tagNames such as ['link', 'script', 'img'].
 // attrNames such as ['src', 'href'].
-// inputDir is the path that the relative path of the asset relative from.
-//     (That is, the directory of markdown file or template html.)
-// outputDir is usually docman/dist.
-function moveAssets(domElement, tagNames, attrNames, inputDir, outputDir) {
-	for (var idxT = 0; idxT < tagNames.length; idxT += 1) {
-		var tagName = tagNames[idxT]
-		var tagElements = domElement.getElementsByTagName(tagName)
-		for (var idxTE = 0; idxTE < tagElements.length; idxTE += 1) {
-			var tagElement = tagElements[idxTE]
-			for (var idxA = 0; idxA < attrNames.length; idxA += 1) {
-				var attrName = attrNames[idxA]
-				// console.log(tagElement[attrName])
-				if (tagElement[attrName] != undefined && tagElement[attrName] != '') {
-					if (isRelativePath(tagElement[attrName])) {
-						var srcPath = path.join(inputDir, tagElement[attrName])
-						if (tagElement[attrName].length >= 2 && tagElement[attrName].slice(0, 2) == '..') {
-							var buffer = fs.readFileSync(srcPath)
-							var fsHash = crypto.createHash('sha256')
-							fsHash.update(buffer)
-							var md5 = fsHash.digest('hex')
-							var extname = path.extname(tagElement[attrName])
-							var fileRename = path.basename(tagElement[attrName], extname) + '.' + md5.slice(0, 8) + extname
-							tagElement[attrName] = path.join('./docman-assets', fileRename)
-						}
-						var desPath = path.join(outputDir, tagElement[attrName])
-						var desDir = path.dirname(desPath)
-						try {
-							fs.accessSync(desDir)
-						}
-						catch (err) {
-							fs.mkdirSync(desDir, {recursive: true})
-						}
-						console.log(`Copy: ${srcPath}   -->   ${desPath}.`)
-						fs.copyFileSync(srcPath, desPath)
-					}
-				}
-			}
-		}
-	}
-}
-
-
+// inputDir is the directory of the document project.
+// inputDirMdDir is the relative path from inputDir to the directory of the markdown file.
+// outputDir is the dist directory.
+// outputDirHtmlDir is the relative path from outputDir to the directory of the built html file.
 function copyAssets(domElement, tagNames, attrNames, inputDir, inputDirMdDir, outputDir, outputDirHtmlDir) {
 	for (var idxT = 0; idxT < tagNames.length; idxT += 1) {
 		var tagName = tagNames[idxT]
@@ -240,18 +190,18 @@ function copyAssets(domElement, tagNames, attrNames, inputDir, inputDirMdDir, ou
 }
 
 
-// assetRelativeFrom is the path that the relative path of the asset relative from,
+// inputDir2MdDir is the path that the relative path of the asset relative from,
 //     it must be a relative path relative to inputDir.
-function copyRelativeAsset(inputDir, assetRelativeFrom, assetRelativePath, outputDir) {
-	var fromInputDir = path.join(assetRelativeFrom, assetRelativePath)
-	var assetPath = path.join(inputDir, fromInputDir)
-	if (fromInputDir.length >= 2 && fromInputDir.slice(0, 2) == '..') {  // Assset is out of inputDir.
+function copyRelativeAsset(inputDir, inputDir2MdDir, mdDir2Asset, outputDir) {
+	var inputDir2Asset = path.join(inputDir2MdDir, mdDir2Asset)
+	var assetPath = path.join(inputDir, inputDir2Asset)
+	if (inputDir2Asset.length >= 2 && inputDir2Asset.slice(0, 2) == '..') {  // Assset is out of inputDir.
 		var fileRename = assetHashName(assetPath)
 		var desPath = path.join(outputDir, './docman-assets', fileRename)
 		return copyAsset(assetPath, desPath)
 	}
 	else {  // Asset is in inputDir.
-		var desPath = path.join(outputDir, fromInputDir)
+		var desPath = path.join(outputDir, inputDir2Asset)
 		return copyAsset(assetPath, desPath)
 	}
 }
@@ -281,7 +231,7 @@ function assetHashName(assetPath) {
 function copyAsset(srcPath, desPath) {
 	// Make sure desDir exist.
 	var desDir = path.dirname(desPath)
-	try {
+	try {s
 		fs.accessSync(desDir)
 	}
 	catch (err) {
@@ -321,16 +271,12 @@ function launch(environment) {
 
 		author: dom.window.document.getElementById('docman-hook-author'),
 
-		// 上一篇链接
 		prev: dom.window.document.getElementById('docman-hook-prev'),
 
-		// 下一篇链接
 		next: dom.window.document.getElementById('docman-hook-next'),
 
-		// 上一篇标题文本
 		prevText: dom.window.document.getElementById('docman-hook-prev-text'),
 
-		// 下一篇标题文本
 		nextText: dom.window.document.getElementById('docman-hook-next-text')
 	}
 	// console.log(hooks)
