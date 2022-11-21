@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const ServerCold = require('./docman_modules/server-cold')
+const ServerCold = require('./docman-modules/server-cold')
 
 
 // DocMan

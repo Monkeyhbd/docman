@@ -4,7 +4,8 @@ const jsdom = require('jsdom')
 const showdown = require('showdown')
 
 const AssetsUtils = require('./assets-utils')
-const HooksUtils = require('./hooks-utils')
+const HooksUtils = require('./hooks/hooks-utils')
+const Hooks = require('./hooks/index')
 
 
 // Append contents/sub-contents's <li> element to ulElement.
@@ -69,17 +70,18 @@ function generateContents(dom, environment, ulElement, docIndex, contentsList, b
 function buildHTML(dom, environment, tasks, taskIdx, hooks) {
 	var task = tasks[taskIdx]
 	console.log('Build:', task.mdPath, '  -->  ', task.htmlPath)
-	// Read markdown file.
-	var mdRaw = fs.readFileSync(task.mdPath, "utf8")
-	// Convert markdown to html.
-	var converter = new showdown.Converter({tables: true, strikethrough: true})
-	var mdHtml = converter.makeHtml(mdRaw)
-	// Insert html to virtual dom.
-	var contentElement = hooks.markdown
-	HooksUtils.feed(hooks.markdown, mdHtml)
+	// // Read markdown file.
+	// var mdRaw = fs.readFileSync(task.mdPath, "utf8")
+	// // Convert markdown to html.
+	// var converter = new showdown.Converter({tables: true, strikethrough: true})
+	// var mdHtml = converter.makeHtml(mdRaw)
+	// // Insert html to virtual dom.
+	// HooksUtils.feed(hooks.markdown, mdHtml)
+	Hooks.markdown(hooks.markdown, task.mdPath)
 
 	// Additional jobs.
 	// Set html head title.
+	var contentElement = hooks.markdown
 	dom.window.document.title = task.headTitleWithPostfix
 	// Set click <a> open a new tab.
 	var aElements = contentElement.getElementsByTagName('a')
