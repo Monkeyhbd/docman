@@ -7,6 +7,9 @@ docs/
 dist/
 themes/*
 
+# Test files
+*.test.*
+
 # Editor
 .vscode/
 .idea/

@@ -10,6 +10,7 @@ function feed(hook, mdPath) {
 	if (hook == undefined) {
 		return undefined
 	}
+
 	// Read markdown file.
 	var mdRaw = fs.readFileSync(mdPath, "utf8")
 	// Convert markdown to html.
@@ -17,6 +18,12 @@ function feed(hook, mdPath) {
 	var mdHtml = converter.makeHtml(mdRaw)
 	// Insert html to virtual dom.
 	HooksUtils.feed(hook, mdHtml)
+
+	// Set click <a> open a new tab.
+	var aElements = hook.getElementsByTagName('a')
+	for (var idx = 0; idx < aElements.length; idx += 1) {
+		aElements[idx].target = '_blank'
+	}
 }
 
 

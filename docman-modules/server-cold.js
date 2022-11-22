@@ -1,7 +1,6 @@
 const fs = require('fs')
 const path = require('path')
 const jsdom = require('jsdom')
-const showdown = require('showdown')
 
 const AssetsUtils = require('./assets-utils')
 const HooksUtils = require('./hooks/hooks-utils')
@@ -70,32 +69,21 @@ function generateContents(dom, environment, ulElement, docIndex, contentsList, b
 function buildHTML(dom, environment, tasks, taskIdx, hooks) {
 	var task = tasks[taskIdx]
 	console.log('Build:', task.mdPath, '  -->  ', task.htmlPath)
-	// // Read markdown file.
-	// var mdRaw = fs.readFileSync(task.mdPath, "utf8")
-	// // Convert markdown to html.
-	// var converter = new showdown.Converter({tables: true, strikethrough: true})
-	// var mdHtml = converter.makeHtml(mdRaw)
-	// // Insert html to virtual dom.
-	// HooksUtils.feed(hooks.markdown, mdHtml)
+	
+	// < --- docman-hook-markdown --- >
 	Hooks.markdown(hooks.markdown, task.mdPath)
 
 	// Additional jobs.
 	// Set html head title.
-	var contentElement = hooks.markdown
 	dom.window.document.title = task.headTitleWithPostfix
-	// Set click <a> open a new tab.
-	var aElements = contentElement.getElementsByTagName('a')
-	for (var idx = 0; idx < aElements.length; idx += 1) {
-		aElements[idx].target = '_blank'
-	}
+
 	// Add 'current' to <a> classList.
 	dom.window.document.getElementById(task.aId).classList.add('current')
 
-	// Move assets from docs and template to dist. (STEP 2)
+	// Move assets included by document to dist.
 	var tagNames = ["img"]
 	var attrNames = ['src', 'href']
-	// moveAssets(contentElement, tagNames, attrNames, path.dirname(task.mdPath), environment.outputDir)
-	AssetsUtils.copyAssets(contentElement, tagNames, attrNames,
+	AssetsUtils.copyAssets(hooks.markdown, tagNames, attrNames,
 	           environment.inputDir, path.relative(environment.inputDir, path.dirname(task.mdPath)),
 	           environment.outputDir, path.relative(environment.outputDir, path.dirname(task.htmlPath)))
 
