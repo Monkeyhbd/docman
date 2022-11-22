@@ -7,78 +7,20 @@ const HooksUtils = require('./hooks/hooks-utils')
 const Hooks = require('./hooks/index')
 
 
-// Append contents/sub-contents's <li> element to ulElement.
-// And generate html build task to buildTasks.
-function generateContents(dom, environment, ulElement, docIndex, contentsList, buildTasks) {
-	// Will build md to html later.
-	// buildTask = [{mdPath: 'path-to-md', outputDir: 'dir-of-html' ... } ... ]
-
-	for (var idx = 0; idx < contentsList.length; idx += 1) {
-		var li = dom.window.document.createElement('li')
-		var a = dom.window.document.createElement('a')
-		// If 'path' defined, write <a>'s href attribute.
-		// And join this md file to build task list.
-		if (contentsList[idx].path != undefined) {
-			var task = {
-				mdPath: path.join(environment.inputDir, contentsList[idx].path),
-				outputDir: environment.outputDir,
-				htmlPath: undefined,
-				headTitle: contentsList[idx].title,
-				headTitleWithPostfix: contentsList[idx].title + (docIndex.titlePostfix || ''),
-				aId: undefined
-			}
-			task.htmlPath = path.join(task.outputDir, path.basename(task.mdPath, path.extname(task.mdPath)) + '.html')
-			task.aId = `a-${buildTasks.length}`
-			if (contentsList[idx].rename != undefined) {
-				task.htmlPath = path.join(task.outputDir, contentsList[idx].rename + '.html')
-			}
-			a.href = path.relative(environment.outputDir, task.htmlPath)
-			a.id = `a-${buildTasks.length}`
-			buildTasks.push(task)
-		}
-		else {
-			a.classList.add('nohover')
-		}
-		// The name 'title' must be defined.
-		var div1 = dom.window.document.createElement('div')
-		div1.classList.add('item-title')
-		div1.innerHTML = contentsList[idx].title
-		a.appendChild(div1)
-		// If 'describe' defined, add describe text.
-		if (contentsList[idx].describe != undefined) {
-			var div2 = dom.window.document.createElement('div')
-			div2.classList.add('item-describe')
-			div2.innerHTML = contentsList[idx].describe
-			a.appendChild(div2)
-		}
-		li.appendChild(a)
-		// If 'list' defined, generate sub-contents.
-		if (contentsList[idx].list != undefined) {
-			var ul = dom.window.document.createElement('ul')
-			generateContents(dom, environment, ul, docIndex, contentsList[idx].list, buildTasks)
-			li.appendChild(ul)
-		}
-		ulElement.appendChild(li)
-	}
-
-	return buildTasks
-}
-
-
 // Build html file to outputDir.
 function buildHTML(dom, environment, tasks, taskIdx, hooks) {
 	var task = tasks[taskIdx]
 	console.log('Build:', task.mdPath, '  -->  ', task.htmlPath)
+
+	///// docman-hook-contents /////
+	Hooks.contents.feed(hooks.contents, task.aId)
 	
-	// < --- docman-hook-markdown --- >
+	///// docman-hook-markdown /////
 	Hooks.markdown(hooks.markdown, task.mdPath)
 
 	// Additional jobs.
 	// Set html head title.
 	dom.window.document.title = task.headTitleWithPostfix
-
-	// Add 'current' to <a> classList.
-	dom.window.document.getElementById(task.aId).classList.add('current')
 
 	// Move assets included by document to dist.
 	var tagNames = ["img"]
@@ -108,13 +50,7 @@ function buildHTML(dom, environment, tasks, taskIdx, hooks) {
 	// Output to html dist.
 	var htmlPath = task.htmlPath
 	fs.writeFileSync(htmlPath, dom.serialize(), 'utf8')
-
-	// Recover origin dom.
-	dom.window.document.getElementById(task.aId).classList.remove('current')
 }
-
-
-
 
 
 function launch(environment) {
@@ -170,13 +106,12 @@ function launch(environment) {
 	var tagNames = ['link', 'script', "img"]
 	var attrNames = ['src', 'href']
 	AssetsUtils.copyAssets(dom.window.document, tagNames, attrNames, environment.themeDir, './', environment.outputDir, './')
-	// moveAssets(dom.window.document, tagNames, attrNames, environment.themeDir, environment.outputDir)
 
 	// Generate contents <ul>.
-	var ul = dom.window.document.createElement('ul')
-	var buildTasks = []
-	generateContents(dom, environment, ul, docIndex, docIndex.list, buildTasks)
-	HooksUtils.feed(hooks.contents, ul.outerHTML)
+	var buildTasks = Hooks.contents.init(environment, docIndex, docIndex.list)
+	console.log(buildTasks)
+	// generateContents(dom, environment, ul, docIndex, docIndex.list, buildTasks)
+	HooksUtils.feed(hooks.contents, Hooks.contents.contentsPrototype.outerHTML)
 
 	// Operate task in buildTasks.
 	for (var idx = 0; idx < buildTasks.length; idx += 1) {

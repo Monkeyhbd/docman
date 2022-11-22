@@ -102,7 +102,7 @@ function copyAsset(srcPath, desPath) {
 	catch (err) {
 		fs.mkdirSync(desDir, {recursive: true})
 	}
-	console.log(`Copy: ${srcPath}   -->   ${desPath}.`)
+	console.log(`Copy: ${srcPath}   -->   ${desPath}`)
 	fs.copyFileSync(srcPath, desPath)
 	return desPath
 }

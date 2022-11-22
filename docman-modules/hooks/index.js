@@ -1,3 +1,7 @@
 module.exports = {
-	markdown: require('./markdown')
+
+	markdown: require('./markdown'),
+
+	contents: require('./contents')
+	
 }
