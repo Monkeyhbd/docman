@@ -102,9 +102,10 @@ function launch(environment) {
 		HooksUtils.feed(hooks.author, docIndex.author)
 	}
 	
-	// Move assets from docs and template to dist. (STEP 1)
+	// Move assets from template to dist.
 	var tagNames = ['link', 'script', "img"]
 	var attrNames = ['src', 'href']
+	// ASSUME INDEX.HTML IN THEMEDIR'S ROOT AND DOC.HTML IN OUTDIR'S ROOT.
 	AssetsUtils.copyAssets(dom.window.document, tagNames, attrNames, environment.themeDir, './', environment.outputDir, './')
 
 	// Generate contents <ul>.
