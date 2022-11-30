@@ -25,10 +25,6 @@ function feed(hook, hookMarkdown) {
 			name: h2.textContent,
 			href: `#${h2.id}`
 		})
-		console.log({
-			name: h2.textContent,
-			href: `#${h2.id}`
-		})
 	}
 
 	var ul = document.createElement('ul')
@@ -39,6 +35,7 @@ function feed(hook, hookMarkdown) {
 		var a = document.createElement('a')
 
 		a.href = map.href
+		a.innerHTML = map.name
 		li.appendChild(a)
 		ul.appendChild(li)
 	}
