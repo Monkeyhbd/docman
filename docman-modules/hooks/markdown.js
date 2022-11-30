@@ -14,7 +14,7 @@ function feed(hook, mdPath) {
 	// Read markdown file.
 	var mdRaw = fs.readFileSync(mdPath, "utf8")
 	// Convert markdown to html.
-	var converter = new showdown.Converter({tables: true, strikethrough: true})
+	var converter = new showdown.Converter({tables: true, strikethrough: true, noHeaderId: true})
 	var mdHtml = converter.makeHtml(mdRaw)
 	// Insert html to virtual dom.
 	HooksUtils.feed(hook, mdHtml)

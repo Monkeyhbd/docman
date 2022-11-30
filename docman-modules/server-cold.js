@@ -18,6 +18,8 @@ function buildHTML(dom, environment, tasks, taskIdx, hooks) {
 	///// docman-hook-markdown /////
 	Hooks.markdown(hooks.markdown, task.mdPath)
 
+	Hooks.list(hooks.list, hooks.markdown)
+
 	// Additional jobs.
 	// Set html head title.
 	dom.window.document.title = task.headTitleWithPostfix
@@ -77,6 +79,9 @@ function launch(environment) {
 		title: document.getElementById('docman-hook-title'),
 
 		contents: document.getElementById('docman-hook-contents'),
+
+		// Unorder list of h2 titles.
+		list: document.getElementById('docman-hook-list'),
 
 		markdown: document.getElementById('docman-hook-markdown'),
 
