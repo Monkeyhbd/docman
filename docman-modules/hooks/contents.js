@@ -11,9 +11,14 @@ var document = dom.window.document
 var contentsPrototype = document.createElement('ul')
 
 
+function init(environment, docIndex, contentsList, buildTasks=[]) {
+	return initCore(environment, docIndex, contentsList, buildTasks, contentsPrototype)
+}
+
+
 // Append contents/sub-contents's <li> element to ulElement.
 // And generate html build task to buildTasks.
-function init(environment, docIndex, contentsList, buildTasks=[]) {
+function initCore(environment, docIndex, contentsList, buildTasks=[], ul) {
 	// Will build md to html later.
 	// buildTask = [{mdPath: 'path-to-md', outputDir: 'dir-of-html' ... } ... ]
 
@@ -58,11 +63,11 @@ function init(environment, docIndex, contentsList, buildTasks=[]) {
 		li.appendChild(a)
 		// If 'list' defined, generate sub-contents.
 		if (contentsList[idx].list != undefined) {
-			var ul = document.createElement('ul')
-			init(environment, docIndex, contentsList[idx].list, buildTasks)
-			li.appendChild(ul)
+			var ulSub = document.createElement('ul')
+			initCore(environment, docIndex, contentsList[idx].list, buildTasks, ulSub)
+			li.appendChild(ulSub)
 		}
-		contentsPrototype.appendChild(li)
+		ul.appendChild(li)
 	}
 
 	return buildTasks
