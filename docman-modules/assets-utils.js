@@ -96,7 +96,7 @@ function assetHashName(assetPath) {
 function copyAsset(srcPath, desPath) {
 	// Make sure desDir exist.
 	var desDir = path.dirname(desPath)
-	try {s
+	try {
 		fs.accessSync(desDir)
 	}
 	catch (err) {
@@ -108,6 +108,29 @@ function copyAsset(srcPath, desPath) {
 }
 
 
+// srcPath is the path of folder, can be relative path or absolute path.
+// desPath is the path that folder copy to.
+function copyFolder(srcPath, desPath) {
+	var tasks = [{from: srcPath, to: desPath}]
+	while (tasks.length > 0) {
+		var task = tasks.shift()
+		var targets = fs.readdirSync(task.from)
+		for (var idx = 0; idx < targets.length; idx += 1) {
+			var target = targets[idx]
+			var from = path.join(task.from, target)
+			var to = path.join(task.to, target)
+			if (fs.statSync(from).isFile()) {
+				copyAsset(from, to)
+			}
+			else {
+				tasks.push({from: from, to: to})
+			}
+		}
+	}
+}
+
+
 module.exports = {
-	copyAssets: copyAssets
+	copyAssets: copyAssets,
+	copyFolder: copyFolder
 }

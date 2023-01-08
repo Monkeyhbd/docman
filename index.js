@@ -2,6 +2,7 @@ const fs = require('fs')
 
 const Objects = require('./docman-modules/objects/index')
 const ServerCold = require('./docman-modules/server-cold')
+const GlobalDocmanConfig = require('./docman-modules/global/docman-config')
 
 
 // DocMan
@@ -12,6 +13,7 @@ console.log('Website: https://docman.monkeyhbd.com')
 var docConfigData = fs.readFileSync('./docman.config.json', 'utf8')
 // DocMan's configuration object.
 var docConfig = JSON.parse(docConfigData)
+GlobalDocmanConfig.config = docConfig
 
 // var environment = buildEnvironment(docConfig)
 var environment = new Objects.Environment(docConfig)

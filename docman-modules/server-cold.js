@@ -5,6 +5,7 @@ const jsdom = require('jsdom')
 const AssetsUtils = require('./assets-utils')
 const HooksUtils = require('./hooks/hooks-utils')
 const Hooks = require('./hooks/index')
+const GlobalVariable = require('./global/variable')
 
 
 // Build html file to outputDir.
@@ -73,6 +74,7 @@ function launch(environment) {
 	var htmlTemplate = fs.readFileSync(environment.themeHtml, 'utf8')
 	// Initialize virtual dom.
 	var dom = new jsdom.JSDOM(htmlTemplate)
+	GlobalVariable.dom = dom
 	var document = dom.window.document
 
 	var hooks = {

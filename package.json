@@ -9,6 +9,7 @@
   "author": "Monkeyhbd",
   "dependencies": {
     "jsdom": "^20.0.0",
+    "katex": "^0.16.4",
     "showdown": "^2.1.0"
   }
 }
