@@ -1,13 +1,34 @@
 /* <Top Design> -------------------------------------------------------------------------------- */
 
 :root {
-	--header-height: 52px;
+	--header-height: 50px;
 	--main-sticky-offset: var(--header-height);
 	--main-visible-height: calc(100vh - var(--header-height));
 }
 
 :root {
 	--default-background-color: #ffffff
+}
+
+::-webkit-scrollbar {
+	width: 7px;
+	height: 7px;
+}
+
+::-webkit-scrollbar-track
+{
+	background-color: #eeeeee;
+}
+
+::-webkit-scrollbar-thumb
+{
+	border-radius: 100px;
+	background-color: #cccccc;
+}
+
+::-webkit-scrollbar-thumb:hover
+{
+	background-color: #aaaaaa;
 }
 
 body {
@@ -17,13 +38,16 @@ body {
 	font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 	background-color: var(--default-background-color);
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    letter-spacing: 0.2px;
+	text-rendering: optimizeLegibility;
 }
 
 header {
 	position: sticky;
 	top: 0;
 	box-sizing: border-box;
-	background-color: rgb(240, 255, 255);
+	background-color: rgba(255, 255, 255, 0.8);
+	backdrop-filter: blur(4px);
 	width: 100%;
 	height: var(--header-height);
 	border-bottom: 1px solid #e8e8e8;
@@ -31,11 +55,12 @@ header {
 }
 
 footer {
-	background-color: rgb(240, 255, 255);
+	background-color: #f8f9fa;
 	width: 100%;
 }
 
 .common-inner {
+	box-sizing: border-box;
 	padding: 0 40px;
 	max-width: 1500px;
 	margin: 0 auto;
@@ -66,7 +91,7 @@ footer {
 
 .header-logo {
 	height: 100%;
-	margin-right: 40px;
+	margin-right: 20px;
 }
 
 .header-logo img {
@@ -83,23 +108,12 @@ footer {
 	margin: 0;
 	padding: 0;
 	line-height: var(--header-content-height);
-	font-size: 20px;
+	font-size: 16px;
 	font-weight: 800;
-	color: #666666;
+	color: #4f545c;
 }
 
 @media screen and (max-width: 1120px) {
-	:root {
-		--header-height: 50px;
-	}
-
-	.header-logo {
-		margin-right: 24px;
-	}
-
-	.header-title h1 {
-		font-size: 18px;
-	}
 }
 
 /* --------------------------------------------------------------------------------------------- */
@@ -135,6 +149,7 @@ footer {
 	overflow: auto;
 	padding: 0 0;
 	background-color: var(--default-background-color);
+	border-right: 1px solid #e8e8e8;
 }
 
 .main-left-inner {
@@ -155,8 +170,12 @@ footer {
 	padding: 0;
 }
 
+.contents > ul > li > a {
+	font-weight: 600;
+}
+
 .contents ul * {
-	color: #444444;
+	color: #4f545c;
 	text-decoration: none;
 }
 
@@ -165,10 +184,11 @@ footer {
 	padding: 6px 12px;
 	background-color: rgba(0, 0, 0, 0);
 	border-radius: 5px;
+	transition: background-color 0.1s;
 }
 
 .contents ul a.current {
-	background: linear-gradient(to right, rgb(220, 255, 255), rgb(240, 255, 255));
+	background: linear-gradient(to right, #f3f3f3, #fafafa);
 }
 
 .contents ul a:hover {
@@ -180,7 +200,7 @@ footer {
 }
 
 .contents .item-title {
-	font-size: 16px;
+	font-size: 14px;
 }
 
 .contents .item-describe {
@@ -292,14 +312,14 @@ footer {
 .prev-next-bar a {
 	display: flex;
 	text-decoration: none;
-	color: rgb(0, 87, 194);
+	color: #3266de;
 	font-weight: bold;
 	line-height: var(--prev-next-bar-height);
 	height: var(--prev-next-bar-height)
 }
 
 .prev-next-bar a:hover {
-	color: rgb(0, 58, 130);
+	color: #487bf2;
 }
 
 .prev-next-bar svg {
@@ -318,11 +338,11 @@ footer {
 }
 
 .prev-next-bar a svg path {
-    fill: rgb(0, 87, 194);
+    fill: #3266de;
 }
 
 .prev-next-bar a:hover svg path {
-	fill: rgb(0, 58, 130);
+	fill: #487bf2;
 }
 
 .prev-next-text {
@@ -393,11 +413,11 @@ footer {
 .footer-content {
 	padding: 40px 0;
 	font-size: 15px;
-	color: #555555;
+	color: #777777;
 }
 
 .footer-content a {
-	color: rgb(0, 87, 194);
+	color: rgb(78, 146, 230);
 	text-decoration: none;
 }
 
