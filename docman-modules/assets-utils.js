@@ -19,13 +19,16 @@ function pathType(pathString) {
 }
 
 
-// Copy the assets that included by domElement's chilren element to dist directory.
-// tagNames such as ['link', 'script', 'img'].
-// attrNames such as ['src', 'href'].
-// inputDir is the directory of the document project.
-// inputDirMdDir is the relative path from inputDir to the directory of the markdown file.
-// outputDir is the dist directory.
-// outputDirHtmlDir is the relative path from outputDir to the directory of the built html file.
+/**
+ * Copy the assets that included by domElement's chilren element to dist directory.
+ * - `domElement` : Scope of elements.
+ * - `tagNames` : List of HTML tag name, such as `['link', 'script', 'img']` .
+ * - `attrNames` : List of HTML attribute name, such as `['src', 'href']` .
+ * - `inputDir` : Root directory of the document project.
+ * - `inputDirMdDir` : Relative path from inputDir to the directory of the markdown file.
+ * - `outputDir` : Root of dist directory.
+ * - `outputDirHtmlDir` : Relative path from outputDir to the directory of the built html file.
+ */
 function copyAssets(domElement, tagNames, attrNames, inputDir, inputDirMdDir, outputDir, outputDirHtmlDir) {
 	for (var idxT = 0; idxT < tagNames.length; idxT += 1) {
 		var tagName = tagNames[idxT]
@@ -108,10 +111,13 @@ function copyAsset(srcPath, desPath) {
 }
 
 
-// srcPath is the path of folder, can be relative path or absolute path.
-// desPath is the path that folder copy to.
+/**
+ * - `srcPath` : Path of folder.
+ * - `desPath` : Path that folder copy to.
+ */
 function copyFolder(srcPath, desPath) {
 	var tasks = [{from: srcPath, to: desPath}]
+	// Level traversal.
 	while (tasks.length > 0) {
 		var task = tasks.shift()
 		var targets = fs.readdirSync(task.from)

@@ -1,4 +1,5 @@
-// docman-hook-contents
+// Name: docman-hook-contents
+// Detail: Contents of the document project.
 
 const path = require('path')
 const jsdom = require('jsdom')
@@ -74,6 +75,11 @@ function initCore(environment, docIndex, contentsList, buildTasks=[], ul) {
 }
 
 
+/**
+ * docman-hook-contents
+ * - `hook` : docman-hook-contents
+ * - `aId` : Id to locate current active \<a\>.
+ */
 function feed(hook, aId) {
 	if (hook == undefined) {
 		return undefined

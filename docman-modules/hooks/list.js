@@ -1,5 +1,6 @@
-// docman-hook-list
-// Unorder list of h2 titles.
+// Name: docman-hook-list
+// Detail: List of h2 titles.
+// After: docman-hook-markdown
 
 const jsdom = require('jsdom')
 
@@ -10,6 +11,11 @@ var dom = new jsdom.JSDOM()
 var document = dom.window.document
 
 
+/**
+ * docman-hook-list, list of `<h2>` titles.
+ * - `hook` : docman-hook-list
+ * - `hookMarkdown` : docman-hook-markdown
+ */
 function feed(hook, hookMarkdown) {
 	if (hook == undefined || hookMarkdown == undefined) {
 		return undefined
