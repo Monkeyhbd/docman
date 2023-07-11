@@ -2,7 +2,9 @@
   "name": "docman",
   "version": "0.1.0",
   "description": "",
-  "main": "index.js",
+  "bin": {
+    "doc": "./main.js"
+  },
   "scripts": {
     "build": "node index.js"
   },
