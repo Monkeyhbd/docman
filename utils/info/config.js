@@ -23,6 +23,9 @@ function getConfigItem(item) {
 		if (current == undefined) {
 			return undefined
 		}
+		if (path[idx] == '') {
+			continue
+		}
 		current = current[path[idx]]
 	}
 	return current

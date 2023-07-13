@@ -1,9 +1,14 @@
 const NodePath = require('node:path')
 const NodeFs = require('node:fs')
+const NodeProcess = require('node:process')
 const UtilsHookFeed = require('../../hook/feed')
 const UtilsAsset = require('../../file/asset')
+const UtilsConfig = require('../../info/config')
 
 
+/** Serve for hooks in list.
+ *  - `pairs` : A list of hook pairs `{elem, hook}[]`.
+ */
 function serve(pairs, env) {
 	for (var idx = 0; idx < pairs.length; idx += 1) {
 		var pair = pairs[idx]
@@ -13,7 +18,13 @@ function serve(pairs, env) {
 		var parameters = pair.hook.parameters
 		var argv = []
 		for (var idxP = 0; idxP < parameters.length; idxP += 1) {
-			argv.push(env[parameters[idxP]])
+			var parameter = parameters[idxP]
+			if (parameter.startsWith('config')) {
+				argv.push(UtilsConfig.getConfigItem(parameter.slice('config'.length)))
+			}
+			else {
+				argv.push(env[parameters[idxP]])
+			}
 		}
 		UtilsHookFeed.operate(elem, attr, render, argv)
 	}
@@ -21,6 +32,7 @@ function serve(pairs, env) {
 
 
 function buildAll(taskList, templateDom, pairs, env) {
+	var outputPath = env['config']['outputDir']
 	// Serve for global hooks.
 	serve(pairs.global, env)
 	// Move assets from template to dist.
@@ -28,11 +40,24 @@ function buildAll(taskList, templateDom, pairs, env) {
 	var attrNames = ['src', 'href']
 	UtilsAsset.copyAssets(templateDom.window.document, tagNames, attrNames,
 		env['config']['themeDir'], './', env['config']['outputDir'], './')
+	// Copy katex resource.
+	if (UtilsConfig.getConfigItem('latex') == true) {
+		var src = NodePath.join(NodePath.dirname(NodeProcess.argv[1]), 'static/docman-katex')
+		var dest = NodePath.join(outputPath, 'docman-katex')
+		UtilsAsset.copyFolder(src, dest)
+		var link = templateDom.window.document.createElement('link')
+		link.rel = 'stylesheet'
+		link.type = 'text/css'
+		link.href = './docman-katex/katex.css'
+		templateDom.window.document.head.appendChild(link)
+	}
 	// Execute tasks.
-	var outputPath = env['config']['outputDir']
 	for (var idx = 0; idx < taskList.length; idx += 1) {
-		// Serve for local hooks.
 		var task = taskList[idx]
+		console.log(`Build[${idx+1}/${taskList.length}]: ${task.inputDirMdPath}   -->   ${task.outputDirHtmlPath}`)
+		// Set HTML title.
+		templateDom.window.document.title = task.headTitle
+		// Serve for local hooks.
 		env['task'] = task
 		env['prevTask'] = taskList[idx-1]
 		env['nextTask'] = taskList[idx+1]
