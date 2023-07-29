@@ -3,6 +3,7 @@ const NodeFs = require('node:fs')
 const NodeProcess = require('node:process')
 const UtilsHookFeed = require('../../hook/feed')
 const UtilsAsset = require('../../file/asset')
+const UtilsFile = require('../../file/index')
 const UtilsConfig = require('../../info/config')
 
 
@@ -32,19 +33,23 @@ function serve(pairs, env) {
 
 
 function buildAll(taskList, templateDom, pairs, env) {
+	var docmanVersion = UtilsFile.readJsonAsObject(NodePath.join(NodePath.dirname(NodeProcess.argv[1]), 'package.json')).version
+	console.log(`===== DocMan v${docmanVersion} =====`)
 	var outputPath = env['config']['outputDir']
-	// Serve for global hooks.
-	serve(pairs.global, env)
 	// Move assets from template to dist.
 	var tagNames = ['link', 'script', "img"]
 	var attrNames = ['src', 'href']
+	console.log('Copy: Theme resource')
 	UtilsAsset.copyAssets(templateDom.window.document, tagNames, attrNames,
-		env['config']['themeDir'], './', env['config']['outputDir'], './')
+		env['config']['themeDir'], './', env['config']['outputDir'], './', {silence: true})
+	// Serve for global hooks.
+	serve(pairs.global, env)
 	// Copy katex resource.
 	if (UtilsConfig.getConfigItem('latex') == true) {
 		var src = NodePath.join(NodePath.dirname(NodeProcess.argv[1]), 'static/docman-katex')
 		var dest = NodePath.join(outputPath, 'docman-katex')
-		UtilsAsset.copyFolder(src, dest)
+		console.log('Copy: Katex resource')
+		UtilsAsset.copyFolder(src, dest, {silence: true})
 		var link = templateDom.window.document.createElement('link')
 		link.rel = 'stylesheet'
 		link.type = 'text/css'
@@ -54,7 +59,7 @@ function buildAll(taskList, templateDom, pairs, env) {
 	// Execute tasks.
 	for (var idx = 0; idx < taskList.length; idx += 1) {
 		var task = taskList[idx]
-		console.log(`Build[${idx+1}/${taskList.length}]: ${task.inputDirMdPath}   -->   ${task.outputDirHtmlPath}`)
+		console.log(`Build[${idx+1}/${taskList.length}]: <${task.title}> ${task.inputDirMdPath}   -->   ${task.outputDirHtmlPath}`)
 		// Set HTML title.
 		templateDom.window.document.title = task.headTitle
 		// Serve for local hooks.

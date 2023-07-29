@@ -10,7 +10,7 @@ USAGE:
 
 
 function execute(argv=['--help']) {
-	console.log(argv)
+	// console.log(argv)
 	if (argv.length <= 2 || argv[2] == '--help' || argv[2] == '-h') {
 		console.log(HELP_MESSAGE)
 		return 0

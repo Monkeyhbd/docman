@@ -12,17 +12,21 @@ const elem = dom.window.document.createElement('div')
 
 
 function preRenderLatex(mdData) {
-	console.log('Pre-render Latex...')
+	// console.log('Pre-render Latex...')
 	// Pre-render Latex in $$...$$.
 	mdData = mdData.replace(/\$\$[\s\S]*?\$\$/gm, function(match) {
 		return Katex.renderToString(match.slice(3, -3), {
-			output: 'html'
+			output: 'html',
+			displayMode: false,  // to pass integrate test (same with previous), will enable later.
+			strict: 'ignore'
 		})
 	})
 	// Pre-render Latex in $...$.
 	mdData = mdData.replace(/\$[\s\S]*?\$/gm, function(match) {
 		return Katex.renderToString(match.slice(1, -1), {
-			output: 'html'
+			output: 'html',
+			displayMode: false,
+			strict: 'ignore'
 		})
 	})
 	return mdData

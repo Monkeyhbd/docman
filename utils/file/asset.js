@@ -1,5 +1,6 @@
 const NodePath = require('node:path')
 const NodeFs = require('node:fs')
+const NodeCrypto = require('node:crypto')
 const { pathType } = require('./index')
 
 
@@ -12,7 +13,7 @@ const { pathType } = require('./index')
  *  - `outputDir` : Root of dist directory.
  *  - `outputDirHtmlDir` : Relative path from outputDir to the directory of the built html file.
  */
-function copyAssets(domElement, tagNames, attrNames, inputDir, inputDirMdDir, outputDir, outputDirHtmlDir) {
+function copyAssets(domElement, tagNames, attrNames, inputDir, inputDirMdDir, outputDir, outputDirHtmlDir, options={silence: false}) {
 	for (var idxT = 0; idxT < tagNames.length; idxT += 1) {
 		var tagName = tagNames[idxT]
 		var tagElements = domElement.getElementsByTagName(tagName)
@@ -24,12 +25,12 @@ function copyAssets(domElement, tagNames, attrNames, inputDir, inputDirMdDir, ou
 				if (tagElement[attrName] != undefined && tagElement[attrName] != '') {
 					var t = pathType(tagElement[attrName])
 					if (t == 'relative') {
-						var distAsset = copyRelativeAsset(inputDir, inputDirMdDir, tagElement[attrName], outputDir)
+						var distAsset = copyRelativeAsset(inputDir, inputDirMdDir, tagElement[attrName], outputDir, options)
 						distAsset = NodePath.relative(outputDir, distAsset)
 						tagElement[attrName] = NodePath.relative(outputDirHtmlDir, distAsset)
 					}
 					else if (t == 'absolute') {
-						var distAsset = copyAbsoluteAsset(tagElement[attrName], outputDir)
+						var distAsset = copyAbsoluteAsset(tagElement[attrName], outputDir, options)
 						distAsset = NodePath.relative(outputDir, distAsset)
 						tagElement[attrName] = NodePath.relative(outputDirHtmlDir, distAsset)
 					}
@@ -43,32 +44,32 @@ function copyAssets(domElement, tagNames, attrNames, inputDir, inputDirMdDir, ou
 
 // inputDir2MdDir is the path that the relative path of the asset relative from,
 //     it must be a relative path relative to inputDir.
-function copyRelativeAsset(inputDir, inputDir2MdDir, mdDir2Asset, outputDir) {
+function copyRelativeAsset(inputDir, inputDir2MdDir, mdDir2Asset, outputDir, options={silence: false}) {
 	var inputDir2Asset = NodePath.join(inputDir2MdDir, mdDir2Asset)
 	var assetPath = NodePath.join(inputDir, inputDir2Asset)
 	if (inputDir2Asset.length >= 2 && inputDir2Asset.slice(0, 2) == '..') {  // Assset is out of inputDir.
 		var fileRename = assetHashName(assetPath)
 		var desPath = NodePath.join(outputDir, './docman-assets', fileRename)
-		return copyAsset(assetPath, desPath)
+		return copyAsset(assetPath, desPath, options)
 	}
 	else {  // Asset is in inputDir.
 		var desPath = NodePath.join(outputDir, inputDir2Asset)
-		return copyAsset(assetPath, desPath)
+		return copyAsset(assetPath, desPath, options)
 	}
 }
 
 
-function copyAbsoluteAsset(assetPath, outputDir) {
+function copyAbsoluteAsset(assetPath, outputDir, options={silence: false}) {
 	var fileRename = assetHashName(assetPath)
 	var desPath = NodePath.join(outputDir, './docman-assets', fileRename)
-	return copyAsset(assetPath, desPath)
+	return copyAsset(assetPath, desPath, options)
 }
 
 
 // Rename asset by hash. Format: asset.123abc.ext
 function assetHashName(assetPath) {
 	var buffer = NodeFs.readFileSync(assetPath)
-	var fsHash = crypto.createHash('sha256')
+	var fsHash = NodeCrypto.createHash('sha256')
 	fsHash.update(buffer)
 	var md5 = fsHash.digest('hex')
 	var extname = NodePath.extname(assetPath)
@@ -79,7 +80,7 @@ function assetHashName(assetPath) {
 
 // srcPath is the path of asset, can be relative path or absolute path.
 // desPath is the path that asset copy to.
-function copyAsset(srcPath, desPath) {
+function copyAsset(srcPath, desPath, options={silence: false}) {
 	// Make sure desDir exist.
 	var desDir = NodePath.dirname(desPath)
 	try {
@@ -88,7 +89,9 @@ function copyAsset(srcPath, desPath) {
 	catch (err) {
 		NodeFs.mkdirSync(desDir, {recursive: true})
 	}
-	console.log(`Copy: ${srcPath}   -->   ${desPath}`)
+	if (options.silence != true) {
+		console.log(`Copy: ${srcPath}   -->   ${desPath}`)
+	}
 	NodeFs.copyFileSync(srcPath, desPath)
 	return desPath
 }
@@ -98,7 +101,7 @@ function copyAsset(srcPath, desPath) {
  * - `srcPath` : Path of folder.
  * - `desPath` : Path that folder copy to.
  */
-function copyFolder(srcPath, desPath) {
+function copyFolder(srcPath, desPath, options={silence: false}) {
 	var tasks = [{from: srcPath, to: desPath}]
 	// Level traversal.
 	while (tasks.length > 0) {
@@ -109,7 +112,7 @@ function copyFolder(srcPath, desPath) {
 			var from = NodePath.join(task.from, target)
 			var to = NodePath.join(task.to, target)
 			if (NodeFs.statSync(from).isFile()) {
-				copyAsset(from, to)
+				copyAsset(from, to, options)
 			}
 			else {
 				tasks.push({from: from, to: to})

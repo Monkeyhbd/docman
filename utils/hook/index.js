@@ -52,7 +52,7 @@ function pair(templateDocument, hooks) {
 						element: element,
 						hook: hook
 					})
-					console.log(hook.name)
+					// console.log(hook.name)
 					hooks.global[hookNames[idx]].flag = true
 					flag = true
 				}
@@ -73,7 +73,7 @@ function pair(templateDocument, hooks) {
 						element: element,
 						hook: hook
 					})
-					console.log(hook.name)
+					// console.log(hook.name)
 					hooks.local[hookNames[idx]].flag = true
 					flag = true
 				}

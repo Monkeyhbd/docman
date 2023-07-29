@@ -1,12 +1,12 @@
 {
-  "name": "docman",
-  "version": "0.1.0",
+  "name": "docman-core",
+  "version": "0.2.0",
   "description": "",
   "bin": {
     "doc": "./main.js"
   },
   "scripts": {
-    "build": "node index.js"
+    "build": "node main.js build"
   },
   "author": "Monkeyhbd",
   "dependencies": {

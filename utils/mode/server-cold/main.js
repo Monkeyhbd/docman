@@ -30,11 +30,11 @@ function launch() {
 	var templateDocument = templateDom.window.document
 
 	var res = UtilsContent.analyse(contentIndex)
-	console.log(res)
+	// console.log(res)
 
 	var builtinHooksDir = NodePath.join(NodePath.dirname(NodeProcess.argv[1]), 'hooks')
 	var pairs = UtilsHook.pair(templateDocument, UtilsHook.scan([builtinHooksDir]))
-	console.log(pairs)
+	// console.log(pairs)
 
 	var env = {
 		'global': res.global,
