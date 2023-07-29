@@ -13,6 +13,7 @@ var contentsPrototype = document.createElement('ul')
 
 
 function init(environment, docIndex, contentsList, buildTasks=[]) {
+	contentsPrototype = document.createElement('ul')
 	return initCore(environment, docIndex, contentsList, buildTasks, contentsPrototype)
 }
 
