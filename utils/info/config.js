@@ -13,12 +13,18 @@ function load(path='./docman.config.json') {
 }
 
 
-/** Get config item's value by its path.
+function set(config) {
+	docmanConfig = config
+}
+
+
+/** Get config item's value by its path. No such item will return `undefined`,
+ *  path `.` will get whole config.
  *  - `item` : Path of item, like `developer.showJsonCode` .
  */
-function getConfigItem(item) {
+function getConfigItem(item, config=undefined) {
 	var path = item.split('.')
-	var current = docmanConfig
+	var current = config || docmanConfig
 	for (var idx = 0; idx < path.length; idx += 1) {
 		if (current == undefined) {
 			return undefined
@@ -34,5 +40,6 @@ function getConfigItem(item) {
 
 module.exports = {
 	load: load,
+	set: set,
 	getConfigItem: getConfigItem
 }

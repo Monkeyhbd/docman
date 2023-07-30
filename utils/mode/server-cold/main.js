@@ -9,9 +9,7 @@ const UtilsHook = require('../../hook/index')
 const UtilsServerColdBuild = require('./build')
 
 
-function launch() {
-	// Make sure output directory exist.
-	UtilsConfig.load('./docman.config.json')
+function subLaunch() {
 	var outputDir = UtilsConfig.getConfigItem('outputDir')
 	try {
 		NodeFs.accessSync(outputDir)
@@ -45,6 +43,22 @@ function launch() {
 		}
 	}
 	UtilsServerColdBuild.buildAll(res.taskList, templateDom, pairs, env)
+}
+
+
+function launch() {
+	// Make sure output directory exist.
+	UtilsConfig.load('./docman.config.json')
+	subLaunch()
+
+	var alsoDoList = UtilsConfig.getConfigItem('alsoDo')
+	if (alsoDoList != undefined) {
+		for (var idx = 0; idx < alsoDoList.length; idx += 1) {
+			var alsoDo = alsoDoList[idx]
+			UtilsConfig.set(alsoDo)
+			subLaunch()
+		}
+	}
 }
 
 
