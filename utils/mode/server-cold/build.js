@@ -34,7 +34,6 @@ function serve(pairs, env) {
 
 function buildAll(taskList, templateDom, pairs, env) {
 	var docmanVersion = UtilsFile.readJsonAsObject(NodePath.join(NodePath.dirname(NodeProcess.argv[1]), 'package.json')).version
-	console.log(`===== DocMan v${docmanVersion} =====`)
 	var outputPath = env['config']['outputDir']
 	// Move assets from template to dist.
 	var tagNames = ['link', 'script', "img"]

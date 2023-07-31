@@ -2,11 +2,8 @@ const NodeFs = require('node:fs')
 const NodePath = require('node:path')
 
 
-function scan(dirs=['hooks']) {
-	var hooks = {
-		global: {},
-		local: {}
-	}
+function scan(templateDocument, dirs=['hooks']) {
+	var hooks = {}  // { name: {hook, flag, element}, ... }
 	for (var idx = 0; idx < dirs.length; idx += 1) {
 		var dir = dirs[idx]
 		var files = NodeFs.readdirSync(dir, {withFileTypes: true})
@@ -14,17 +11,10 @@ function scan(dirs=['hooks']) {
 			var file = files[idxF]
 			if (file.isFile()) {
 				var hook = require(NodePath.join(dir, file.name))
-				if (hook.scope == 'global') {
-					hooks.global[hook.name] = {
-						hook: hook,
-						flag: false
-					}
-				}
-				else if (hook.scope == 'local') {
-					hooks.local[hook.name] = {
-						hook: hook,
-						flag: false
-					}
+				hooks[hook.name] = {
+					hook: hook,
+					flag: false,
+					element: templateDocument.getElementById(hook.hook.id)
 				}
 			}
 		}
@@ -33,49 +23,45 @@ function scan(dirs=['hooks']) {
 }
 
 
-function pair(templateDocument, hooks) {
+function pair(templateDocument, hookDirs) {
+	var hooks = scan(templateDocument, hookDirs)
 	var pairs = {
 		global: [],
 		local: []
 	}
-	var hookNames = Object.keys(hooks.global)
-	var flag = true
+	var hookElement = {}
+	var hookNames = Object.keys(hooks)
+	var flag = true  // Has change in last loop.
 	while (flag) {
 		flag = false
 		for (var idx = 0; idx < hookNames.length; idx += 1) {
-			var hook = hooks.global[hookNames[idx]].hook
-			if (hooks.global[hookNames[idx]].flag == false) {
-				var id = hook.hook.id
-				var element = templateDocument.getElementById(id)
-				if (element != undefined) {
-					pairs.global.push({
-						element: element,
-						hook: hook
-					})
-					// console.log(hook.name)
-					hooks.global[hookNames[idx]].flag = true
-					flag = true
+			var hookName = hookNames[idx]
+			var hookContext = hooks[hookName]
+			if (hookContext.element != undefined && hookContext.flag == false) {
+				// Check is all depend hook rendered.
+				var dependAdded = true
+				for (var idxA = 0; idxA < hookContext.hook.after.length; idxA += 1) {
+					var dependHookName = hookContext.hook.after[idxA]
+					var dependHookContext = hooks[dependHookName]
+					// Not declare in theme, but depend by other hook.
+					if (dependHookContext.element == undefined) {  // Temporary fake node.
+						dependHookContext.element = templateDocument.createElement('div')
+					}
+					// A depend hook has not rendered.
+					if (dependHookContext.flag == false) {
+						dependAdded = false
+					}
 				}
-			}
-		}
-	}
-	var hookNames = Object.keys(hooks.local)
-	var flag = true
-	while (flag) {
-		flag = false
-		for (var idx = 0; idx < hookNames.length; idx += 1) {
-			var hook = hooks.local[hookNames[idx]].hook
-			if (hooks.local[hookNames[idx]].flag == false) {
-				var id = hook.hook.id
-				var element = templateDocument.getElementById(id)
-				if (element != undefined) {
-					pairs.local.push({
-						element: element,
-						hook: hook
+				// Wait until all depend hook rendered.
+				if (dependAdded) {
+					pairs[hookContext.hook.scope].push({
+						element: hookContext.element,
+						hook: hookContext.hook
 					})
-					// console.log(hook.name)
-					hooks.local[hookNames[idx]].flag = true
+					hookElement[hookContext.hook.hook.id] = hookContext.element
+					hookContext.flag = true  // Mark as rendered.
 					flag = true
+					// console.log(hookName)
 				}
 			}
 		}
