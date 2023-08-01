@@ -33,7 +33,7 @@ function subLaunch() {
 	// console.log(res)
 
 	var builtinHooksDir = NodePath.join(NodePath.dirname(NodeProcess.argv[1]), 'hooks')
-	var pairs = UtilsHook.pair(templateDocument, [builtinHooksDir])
+	var {pairs, hookElement} = UtilsHook.pair(templateDocument, [builtinHooksDir])
 	// console.log(pairs)
 
 	var env = {
@@ -44,7 +44,7 @@ function subLaunch() {
 			'themeDir': UtilsConfig.getConfigItem('themeDir')
 		}
 	}
-	UtilsServerColdBuild.buildAll(res.taskList, templateDom, pairs, env)
+	UtilsServerColdBuild.buildAll(res.taskList, templateDom, pairs, hookElement, env)
 }
 
 

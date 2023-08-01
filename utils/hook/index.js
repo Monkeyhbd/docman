@@ -66,7 +66,7 @@ function pair(templateDocument, hookDirs) {
 			}
 		}
 	}
-	return pairs
+	return {pairs, hookElement}
 }
 
 

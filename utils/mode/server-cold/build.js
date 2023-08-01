@@ -10,7 +10,7 @@ const UtilsConfig = require('../../info/config')
 /** Serve for hooks in list.
  *  - `pairs` : A list of hook pairs `{elem, hook}[]`.
  */
-function serve(pairs, env) {
+function serve(pairs, hookElement, env) {
 	for (var idx = 0; idx < pairs.length; idx += 1) {
 		var pair = pairs[idx]
 		var elem = pair.element
@@ -23,6 +23,9 @@ function serve(pairs, env) {
 			if (parameter.startsWith('config')) {
 				argv.push(UtilsConfig.getConfigItem(parameter.slice('config'.length)))
 			}
+			else if (parameter.startsWith('docman-hook')) {
+				argv.push(hookElement[parameter])
+			}
 			else {
 				argv.push(env[parameters[idxP]])
 			}
@@ -32,7 +35,7 @@ function serve(pairs, env) {
 }
 
 
-function buildAll(taskList, templateDom, pairs, env) {
+function buildAll(taskList, templateDom, pairs, hookElement, env) {
 	var docmanVersion = UtilsFile.readJsonAsObject(NodePath.join(NodePath.dirname(NodeProcess.argv[1]), 'package.json')).version
 	var outputPath = env['config']['outputDir']
 	// Move assets from template to dist.
@@ -42,7 +45,7 @@ function buildAll(taskList, templateDom, pairs, env) {
 	UtilsAsset.copyAssets(templateDom.window.document, tagNames, attrNames,
 		env['config']['themeDir'], './', env['config']['outputDir'], './', {silence: true})
 	// Serve for global hooks.
-	serve(pairs.global, env)
+	serve(pairs.global, hookElement, env)
 	// Copy katex resource.
 	if (UtilsConfig.getConfigItem('latex') == true) {
 		var src = NodePath.join(NodePath.dirname(NodeProcess.argv[1]), 'static/docman-katex')
@@ -65,7 +68,7 @@ function buildAll(taskList, templateDom, pairs, env) {
 		env['task'] = task
 		env['prevTask'] = taskList[idx-1]
 		env['nextTask'] = taskList[idx+1]
-		serve(pairs.local, env)
+		serve(pairs.local, hookElement, env)
 		// Output to html dist.
 		var htmlPath = NodePath.join(outputPath, task.outputDirHtmlPath)
 		NodeFs.writeFileSync(htmlPath, templateDom.serialize())
