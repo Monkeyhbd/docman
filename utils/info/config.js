@@ -1,3 +1,5 @@
+const NodePath = require('node:path')
+const NodeProcess = require('node:process')
 const UtilsFile = require('../file/index')
 
 
@@ -9,6 +11,9 @@ var docmanConfig = undefined
  */
 function load(path='./docman.config.json') {
 	docmanConfig = UtilsFile.readJsonAsObject(path)
+	if (docmanConfig.themeDir == 'builtin') {
+		docmanConfig.themeDir = NodePath.join(NodePath.dirname(NodeProcess.argv[1]), 'themes/docman-theme-classic')
+	}
 	return docmanConfig
 }
 
