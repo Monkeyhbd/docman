@@ -1,0 +1,26 @@
+# npm
+node_modules/
+package-lock.json
+
+# DocMan's default input / output directory
+docs/
+dist/
+themes/*
+
+# Test files
+*.test.*
+
+# Editor
+.vscode/
+.idea/
+
+# Custom
+test/
+
+# Keep
+!themes/docman-theme-classic
+
+# Git
+.git/
+.github/
+.gitignore
