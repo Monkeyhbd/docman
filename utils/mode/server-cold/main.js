@@ -10,7 +10,7 @@ const UtilsServerColdBuild = require('./build')
 
 
 function subLaunch() {
-	var docmanVersion = UtilsFile.readJsonAsObject(NodePath.join(NodePath.dirname(NodeProcess.argv[1]), 'package.json')).version
+	var docmanVersion = UtilsFile.readJsonAsObject(NodePath.join(UtilsFile.DOCMAN_PROGRAM, 'package.json')).version
 	console.log(`===== DocMan v${docmanVersion} =====`)
 	var outputDir = UtilsConfig.getConfigItem('outputDir')
 	try {
@@ -32,7 +32,7 @@ function subLaunch() {
 	var res = UtilsContent.analyse(contentIndex)
 	// console.log(res)
 
-	var builtinHooksDir = NodePath.join(NodePath.dirname(NodeProcess.argv[1]), 'hooks')
+	var builtinHooksDir = NodePath.join(UtilsFile.DOCMAN_PROGRAM, 'hooks')
 	var {pairs, hookElement} = UtilsHook.pair(templateDocument, [builtinHooksDir])
 	// console.log(pairs)
 

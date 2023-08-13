@@ -12,7 +12,7 @@ var docmanConfig = undefined
 function load(path='./docman.config.json') {
 	docmanConfig = UtilsFile.readJsonAsObject(path)
 	if (docmanConfig.themeDir == 'builtin') {
-		docmanConfig.themeDir = NodePath.join(NodePath.dirname(NodeProcess.argv[1]), 'themes/docman-theme-classic')
+		docmanConfig.themeDir = NodePath.join(UtilsFile.DOCMAN_PROGRAM, 'themes/docman-theme-classic')
 	}
 	return docmanConfig
 }

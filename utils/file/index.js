@@ -2,6 +2,9 @@ const NodePath = require('node:path')
 const NodeFs = require('node:fs')
 
 
+const DOCMAN_PROGRAM = NodePath.join(__dirname, '../..')
+
+
 /** Determine the type of `path`. Type can be 'absolute', 'relative' or 'web'.
  */ 
 function pathType(path) {
@@ -46,6 +49,7 @@ function readJsonAsObject(path) {
 
 
 module.exports = {
+	DOCMAN_PROGRAM: DOCMAN_PROGRAM,
 	pathType: pathType,
 	writeObjectAsJson: writeObjectAsJson,
 	readJsonAsObject: readJsonAsObject

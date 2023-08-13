@@ -3,8 +3,8 @@ const NodeFs = require('node:fs')
 const NodeProcess = require('node:process')
 const UtilsHookFeed = require('../../hook/feed')
 const UtilsAsset = require('../../file/asset')
-const UtilsFile = require('../../file/index')
 const UtilsConfig = require('../../info/config')
+const UtilsFile = require('../../file/index')
 
 
 /** Serve for hooks in list.
@@ -36,7 +36,6 @@ function serve(pairs, hookElement, env) {
 
 
 function buildAll(taskList, templateDom, pairs, hookElement, env) {
-	var docmanVersion = UtilsFile.readJsonAsObject(NodePath.join(NodePath.dirname(NodeProcess.argv[1]), 'package.json')).version
 	var outputPath = env['config']['outputDir']
 	// Move assets from template to dist.
 	var tagNames = ['link', 'script', "img"]
@@ -48,7 +47,7 @@ function buildAll(taskList, templateDom, pairs, hookElement, env) {
 	serve(pairs.global, hookElement, env)
 	// Copy katex resource.
 	if (UtilsConfig.getConfigItem('latex') == true) {
-		var src = NodePath.join(NodePath.dirname(NodeProcess.argv[1]), 'static/docman-katex')
+		var src = NodePath.join(UtilsFile.DOCMAN_PROGRAM, 'static/docman-katex')
 		var dest = NodePath.join(outputPath, 'docman-katex')
 		console.log('Copy: Katex resource')
 		UtilsAsset.copyFolder(src, dest, {silence: true})
