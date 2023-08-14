@@ -1,5 +1,8 @@
+const NodeFs = require('node:fs')
+const NodePath = require('node:path')
 const Jsdom = require('jsdom')
 const UtilsFormulaTask = require('../formula/task')
+const UtilsConfig = require('./config')
 
 
 var dom = new Jsdom.JSDOM()
@@ -17,9 +20,14 @@ function analyseCore(list, ul, taskList=[], global={}) {
 				idx: taskList.length,
 				aId: `a-${taskList.length}`
 			})
-			a.href = task.outputDirHtmlPath
-			a.id = task.aId
-			taskList.push(task)
+			if (NodeFs.existsSync(NodePath.join(UtilsConfig.getConfigItem('inputDir'), task.inputDirMdPath))) {
+				a.href = task.outputDirHtmlPath
+				a.id = task.aId
+				taskList.push(task)
+			}
+			else {
+				console.log(`Warn: Input file ${task.inputDirMdPath} not exist. Skip.`)
+			}
 		}
 		else {
 			a.classList.add('nohover')

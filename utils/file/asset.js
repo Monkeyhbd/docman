@@ -24,17 +24,22 @@ function copyAssets(domElement, tagNames, attrNames, inputDir, inputDirMdDir, ou
 				// console.log(tagElement[attrName])
 				if (tagElement[attrName] != undefined && tagElement[attrName] != '') {
 					var t = pathType(tagElement[attrName])
-					if (t == 'relative') {
-						var distAsset = copyRelativeAsset(inputDir, inputDirMdDir, tagElement[attrName], outputDir, options)
-						distAsset = NodePath.relative(outputDir, distAsset)
-						tagElement[attrName] = NodePath.relative(outputDirHtmlDir, distAsset)
+					try {
+						if (t == 'relative') {
+							var distAsset = copyRelativeAsset(inputDir, inputDirMdDir, tagElement[attrName], outputDir, options)
+							distAsset = NodePath.relative(outputDir, distAsset)
+							tagElement[attrName] = NodePath.relative(outputDirHtmlDir, distAsset)
+						}
+						else if (t == 'absolute') {
+							var distAsset = copyAbsoluteAsset(tagElement[attrName], outputDir, options)
+							distAsset = NodePath.relative(outputDir, distAsset)
+							tagElement[attrName] = NodePath.relative(outputDirHtmlDir, distAsset)
+						}
+						else {}
 					}
-					else if (t == 'absolute') {
-						var distAsset = copyAbsoluteAsset(tagElement[attrName], outputDir, options)
-						distAsset = NodePath.relative(outputDir, distAsset)
-						tagElement[attrName] = NodePath.relative(outputDirHtmlDir, distAsset)
+					catch (err) {
+						console.log(`Warn: Copy ${tagElement[attrName]} failed, file not exist. Skip.`)
 					}
-					else {}
 				}
 			}
 		}
