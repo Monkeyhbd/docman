@@ -39,6 +39,7 @@ function copyAssets(domElement, tagNames, attrNames, inputDir, inputDirMdDir, ou
 					}
 					catch (err) {
 						console.log(`Warn: Copy ${tagElement[attrName]} failed, file not exist. Skip.`)
+						tagElement[attrName] = 'file-not-exist'
 					}
 				}
 			}
