@@ -9,7 +9,7 @@ var dom = new Jsdom.JSDOM()
 var document = dom.window.document
 
 
-function analyseCore(list, ul, taskList=[], global={}) {
+function analyseCore(list, ul, taskList=[], global={}, outputDirHtmlPaths=[]) {
 	for (var idx = 0; idx < list.length; idx += 1) {
 		var li = document.createElement('li')
 		var a = document.createElement('a')
@@ -24,6 +24,10 @@ function analyseCore(list, ul, taskList=[], global={}) {
 				a.href = task.outputDirHtmlPath
 				a.id = task.aId
 				taskList.push(task)
+				if (outputDirHtmlPaths.indexOf(task.outputDirHtmlPath) > -1) {
+					console.log(`Warn: ${task.inputDirMdPath} --> ${task.outputDirHtmlPath} overwrite previous built html. Consider set 'rename' attribute in index.json.`)
+				}
+				outputDirHtmlPaths.push(task.outputDirHtmlPath)
 			}
 			else {
 				console.log(`Warn: Input file ${task.inputDirMdPath} not exist. Skip.`)
@@ -48,7 +52,7 @@ function analyseCore(list, ul, taskList=[], global={}) {
 		// If 'list' defined, generate sub-contents.
 		if (list[idx].list != undefined) {
 			var ulSub = document.createElement('ul')
-			analyseCore(list[idx].list, ulSub, taskList, global)
+			analyseCore(list[idx].list, ulSub, taskList, global, outputDirHtmlPaths)
 			li.appendChild(ulSub)
 		}
 		ul.appendChild(li)
@@ -65,7 +69,7 @@ function analyse(contentIndex) {
 	}
 	var ul = document.createElement('ul')
 	var taskList = []
-	analyseCore(contentIndex.list, ul, taskList, global)
+	analyseCore(contentIndex.list, ul, taskList, global, [])
 	global.contentElement = ul
 	return {
 		global: global,
