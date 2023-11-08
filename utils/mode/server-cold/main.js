@@ -7,9 +7,12 @@ const UtilsFile = require('../../file/index')
 const UtilsContent = require('../../info/content')
 const UtilsHook = require('../../hook/index')
 const UtilsServerColdBuild = require('./build')
+const UtilsConsoleWarn = require('../../console/warn')
 
 
 function subLaunch() {
+	// Clear warning history.
+	UtilsConsoleWarn.clearCache()
 	var docmanVersion = UtilsFile.readJsonAsObject(NodePath.join(UtilsFile.DOCMAN_PROGRAM, 'package.json')).version
 	console.log(`===== DocMan v${docmanVersion} =====`)
 	var outputDir = UtilsConfig.getConfigItem('outputDir')
@@ -45,6 +48,8 @@ function subLaunch() {
 		}
 	}
 	UtilsServerColdBuild.buildAll(res.taskList, templateDom, pairs, hookElement, env)
+	// Warning again.
+	UtilsConsoleWarn.summary()
 }
 
 

@@ -3,6 +3,7 @@ const NodePath = require('node:path')
 const Jsdom = require('jsdom')
 const UtilsFormulaTask = require('../formula/task')
 const UtilsConfig = require('./config')
+const UtilsConsoleWarn = require('../console/warn')
 
 
 var dom = new Jsdom.JSDOM()
@@ -25,12 +26,14 @@ function analyseCore(list, ul, taskList=[], global={}, outputDirHtmlPaths=[]) {
 				a.id = task.aId
 				taskList.push(task)
 				if (outputDirHtmlPaths.indexOf(task.outputDirHtmlPath) > -1) {
-					console.log(`Warn: ${task.inputDirMdPath} --> ${task.outputDirHtmlPath} overwrite previous built html. Consider set 'rename' attribute in index.json.`)
+					// console.log(`Warn: ${task.inputDirMdPath} --> ${task.outputDirHtmlPath} overwrite previous built html. Consider set 'rename' attribute in index.json.`)
+					UtilsConsoleWarn.print(`${task.inputDirMdPath} --> ${task.outputDirHtmlPath} overwrite previous built html. Consider set 'rename' attribute in index.json.`)
 				}
 				outputDirHtmlPaths.push(task.outputDirHtmlPath)
 			}
 			else {
-				console.log(`Warn: Input file ${task.inputDirMdPath} not exist. Skip.`)
+				// console.log(`Warn: Input file ${task.inputDirMdPath} not exist. Skip.`)
+				UtilsConsoleWarn.print(`Input file ${task.inputDirMdPath} not exist.`)
 			}
 		}
 		else {

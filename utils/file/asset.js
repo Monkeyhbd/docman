@@ -2,6 +2,7 @@ const NodePath = require('node:path')
 const NodeFs = require('node:fs')
 const NodeCrypto = require('node:crypto')
 const { pathType } = require('./index')
+const UtilsConsoleWarn = require('../console/warn')
 
 
 /** Copy the assets that included under the domElement to dist directory.
@@ -38,7 +39,8 @@ function copyAssets(domElement, tagNames, attrNames, inputDir, inputDirMdDir, ou
 						else {}
 					}
 					catch (err) {
-						console.log(`Warn: Copy ${tagElement[attrName]} failed, file not exist. Skip.`)
+						// console.log(`Warn: Copy ${tagElement[attrName]} failed, file not exist. Skip.`)
+						UtilsConsoleWarn.print(`Copy ${tagElement[attrName]} failed, file not exist.`)
 						tagElement[attrName] = 'file-not-exist'
 					}
 				}
