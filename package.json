@@ -1,7 +1,7 @@
 {
   "name": "docman-core",
   "author": "Monkeyhbd <monkeyhbd@163.com> (https://www.monkeyhbd.com)",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "A documentation website building system.",
   "bin": {
     "doc": "./main.js"
