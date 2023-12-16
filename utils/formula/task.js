@@ -1,6 +1,24 @@
 const NodePath = require('node:path')
 
 
+function htmlName(article) {
+	if (article.rename != undefined) {
+		return article.rename + '.html'
+	}
+	else if (article.autoRename == 'by-path') {
+		var pathParse = NodePath.parse(article.path)
+		var parts = pathParse.dir.split(/[\/\\]/)  // ['a', 'b', 'c']
+		parts.push(pathParse.name)
+		if (parts[0] == '.') {
+			parts = parts.slice(1)
+		}
+		var str = parts.join('-')
+		return str + '.html'
+	}
+	return NodePath.basename(article.path, NodePath.extname(article.path)) + '.html'
+}
+
+
 /** Task formula. Each task object guide one buid.
  * 
  *  Parameters:
@@ -21,8 +39,7 @@ function taskFormula(article, global={}, local={}) {
 		title: article.title,
 		headTitle: article.title + (global.titlePostfix || ''),
 		inputDirMdPath: article.path,
-		outputDirHtmlPath: (article.rename
-		|| NodePath.basename(article.path, NodePath.extname(article.path))) + '.html',
+		outputDirHtmlPath: htmlName(article),
 		aId: local.aId
 	}
 }

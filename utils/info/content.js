@@ -10,6 +10,19 @@ var dom = new Jsdom.JSDOM()
 var document = dom.window.document
 
 
+const INHERITABLE = ['autoRename']
+
+
+function inherit(parent, child) {
+	for (var idx = 0; idx < INHERITABLE.length; idx += 1) {
+		var attr = INHERITABLE[idx]
+		if (parent[attr] != undefined && child[attr] == undefined) {
+			child[attr] = parent[attr]
+		}
+	}
+}
+
+
 function analyseCore(list, ul, taskList=[], global={}, outputDirHtmlPaths=[]) {
 	for (var idx = 0; idx < list.length; idx += 1) {
 		var li = document.createElement('li')
@@ -55,6 +68,10 @@ function analyseCore(list, ul, taskList=[], global={}, outputDirHtmlPaths=[]) {
 		// If 'list' defined, generate sub-contents.
 		if (list[idx].list != undefined) {
 			var ulSub = document.createElement('ul')
+			// Inherit inheritable attribute.
+			for (var idx_article = 0; idx_article < list[idx].list.length; idx_article += 1) {
+				inherit(list[idx], list[idx].list[idx_article])
+			}
 			analyseCore(list[idx].list, ulSub, taskList, global, outputDirHtmlPaths)
 			li.appendChild(ulSub)
 		}
@@ -72,6 +89,10 @@ function analyse(contentIndex) {
 	}
 	var ul = document.createElement('ul')
 	var taskList = []
+	// Inherit inheritable attribute.
+	for (var idx_article = 0; idx_article < contentIndex.list.length; idx_article += 1) {
+		inherit(contentIndex, contentIndex.list[idx_article])
+	}
 	analyseCore(contentIndex.list, ul, taskList, global, [])
 	global.contentElement = ul
 	return {
