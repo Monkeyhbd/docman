@@ -36,6 +36,7 @@ function serve(pairs, hookElement, env) {
 
 
 function buildAll(taskList, templateDom, pairs, hookElement, env) {
+	console.log('Build: Start to build documentation.')
 	var outputPath = env['config']['outputDir']
 	// Move assets from template to dist.
 	var tagNames = ['link', 'script', "img"]

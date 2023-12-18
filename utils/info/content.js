@@ -4,13 +4,14 @@ const Jsdom = require('jsdom')
 const UtilsFormulaTask = require('../formula/task')
 const UtilsConfig = require('./config')
 const UtilsConsoleWarn = require('../console/warn')
+const UtilsFile = require('../file/index')
 
 
 var dom = new Jsdom.JSDOM()
 var document = dom.window.document
 
 
-const INHERITABLE = ['autoRename']
+const INHERITABLE = ['autoRename', '__basePath']
 
 
 function inherit(parent, child) {
@@ -23,8 +24,24 @@ function inherit(parent, child) {
 }
 
 
+/** cascade({a: 1, b: 2}, {b: 3, c: 4}) = {a: 1, b: 2, c: 4} */
+function objectCascade(a, b) {
+	return Object.assign(b, a)
+}
+
+
 function analyseCore(list, ul, taskList=[], global={}, outputDirHtmlPaths=[]) {
 	for (var idx = 0; idx < list.length; idx += 1) {
+		// Import sub content index file.
+		if (list[idx].import != undefined) {
+			var inputDirSubIndexPath = NodePath.join(list[idx]['__basePath'] || '.', list[idx].import)
+			var subIndexPath = NodePath.join(UtilsConfig.getConfigItem('inputDir'), inputDirSubIndexPath)
+			console.log(`Prepare: Import sub content index file from ${subIndexPath}.`)
+			var child = UtilsFile.readJsonAsObject(subIndexPath)
+			list[idx] = objectCascade(list[idx], child)
+			var basePath = NodePath.dirname(inputDirSubIndexPath)
+			list[idx]['__basePath'] = basePath
+		}
 		var li = document.createElement('li')
 		var a = document.createElement('a')
 		// Only if 'path' defined, write <a>'s href attribute.
@@ -82,6 +99,7 @@ function analyseCore(list, ul, taskList=[], global={}, outputDirHtmlPaths=[]) {
 
 /** Analyse content index, generate global environment and task lisk. */
 function analyse(contentIndex) {
+	console.log('Prepare: Analyse content index file.')
 	var global = {
 		titlePostfix: contentIndex.titlePostfix || '',
 		author: contentIndex.author || '',

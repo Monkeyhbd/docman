@@ -6,7 +6,7 @@ function htmlName(article) {
 		return article.rename + '.html'
 	}
 	else if (article.autoRename == 'by-path') {
-		var pathParse = NodePath.parse(article.path)
+		var pathParse = NodePath.parse(NodePath.join(article['__basePath'] || '.', article.path))
 		var parts = pathParse.dir.split(/[\/\\]/)  // ['a', 'b', 'c']
 		parts.push(pathParse.name)
 		if (parts[0] == '.') {
@@ -38,7 +38,7 @@ function taskFormula(article, global={}, local={}) {
 		idx: local.idx,
 		title: article.title,
 		headTitle: article.title + (global.titlePostfix || ''),
-		inputDirMdPath: article.path,
+		inputDirMdPath: NodePath.join(article['__basePath'] || '.', article.path),
 		outputDirHtmlPath: htmlName(article),
 		aId: local.aId
 	}
