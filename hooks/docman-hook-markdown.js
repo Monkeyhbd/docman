@@ -17,7 +17,7 @@ function preRenderLatex(mdData) {
 	mdData = mdData.replace(/\$\$[\s\S]*?\$\$/gm, function(match) {
 		return Katex.renderToString(match.slice(3, -3), {
 			output: 'html',
-			displayMode: false,  // to pass integrate test (same with previous), will enable later.
+			displayMode: true,  // to pass integrate test (same with previous), will enable later.
 			strict: 'ignore'
 		})
 	})
