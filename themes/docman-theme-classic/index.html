@@ -31,7 +31,7 @@
 		</header>
 		<main>
 			<div class="main-inner common-inner">
-				<div class="main-left close">
+				<div class="main-left close" onscroll="contentScrollPositionRemember(this)">
 					<div class="main-left-head">
 						<div class="main-left-close-button" onclick="toggleMainLeft()">X</div>
 					</div>
@@ -40,6 +40,7 @@
 						</div>
 					</div>
 				</div>
+				<script>contentScrollPositionRestore()</script>
 				<div class="main-center">
 					<div class="content-wrapper">
 						<div id="docman-hook-markdown" class="content">

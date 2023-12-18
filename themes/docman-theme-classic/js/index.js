@@ -9,3 +9,15 @@ function toggleMainLeft() {
 		mainLeft.classList.remove('close');
 	}
 }
+
+
+function contentScrollPositionRemember(elem) {
+	sessionStorage.setItem('contentScrollTop', elem.scrollTop)
+}
+
+
+function contentScrollPositionRestore() {
+	var elem = document.getElementsByClassName('main-left')[0]
+	var scrollTop = sessionStorage.getItem('contentScrollTop')
+	elem.scrollTop = scrollTop
+}
