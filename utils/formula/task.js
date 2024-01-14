@@ -9,7 +9,7 @@ function htmlName(article) {
 		var pathParse = NodePath.parse(NodePath.join(article['__basePath'] || '.', article.path))
 		var parts = pathParse.dir.split(/[\/\\]/)  // ['a', 'b', 'c']
 		parts.push(pathParse.name)
-		if (parts[0] == '.') {
+		while (parts.length > 0 && (parts[0] == '.' || parts[0] == '')) {
 			parts = parts.slice(1)
 		}
 		var str = parts.join('-')
