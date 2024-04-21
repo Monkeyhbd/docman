@@ -2,7 +2,7 @@
   "name": "docman-core",
   "author": "Monkeyhbd <monkeyhbd@163.com> (https://www.monkeyhbd.com)",
   "version": "0.2.7",
-  "description": "A documentation website building system.",
+  "description": "A documentation website build system.",
   "bin": {
     "doc": "./main.js"
   },
@@ -10,7 +10,7 @@
     "build": "node main.js build"
   },
   "dependencies": {
-    "jsdom": "^20.0.0",
+    "jsdom": "^24.0.0",
     "katex": "^0.16.4",
     "showdown": "^2.1.0"
   },

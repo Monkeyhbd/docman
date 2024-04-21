@@ -24,12 +24,13 @@ function contentScrollPositionRestore() {
 
 
 function setDarkMode(status='on') {
+  sessionStorage.setItem('darkMode', status);
   localStorage.setItem('darkMode', status);
 }
 
 
 function getDarkMode() {
-  return localStorage.getItem('darkMode');
+  return sessionStorage.getItem('darkMode') || localStorage.getItem('darkMode');
 }
 
 
@@ -48,6 +49,9 @@ function toggleDarkMode() {
 
 function reloadDarkMode() {
   var html = document.documentElement;
+  if (null == getDarkMode()) {
+    setDarkMode(matchMedia('(prefers-color-scheme: dark)').matches ? 'on' : 'off');
+  }
   if ('on' == getDarkMode()) {
     html.classList.add('dark-mode');
   }
@@ -55,3 +59,17 @@ function reloadDarkMode() {
     html.classList.remove('dark-mode');
   }
 }
+
+
+var mediaIsDark = window.matchMedia('(prefers-color-scheme: light)');
+mediaIsDark.addEventListener('change', function() {
+  var html = document.documentElement;
+  if(this.matches){
+    html.classList.remove('dark-mode');
+    setDarkMode('off');
+  }
+  else {
+    html.classList.add('dark-mode');
+    setDarkMode('on');
+  }
+});

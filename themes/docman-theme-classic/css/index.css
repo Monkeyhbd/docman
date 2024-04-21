@@ -188,7 +188,6 @@ footer {
   transition: left 0.2s;
   /* padding: 2px; */
   box-sizing: border-box;
-  position: relative;
 }
 
 .light-dark-switch-inner svg {
